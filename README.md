@@ -256,7 +256,7 @@ INSERT INTO salaries VALUES(10002,72527,'1985-11-21','1996-08-03');
 INSERT INTO salaries VALUES(10003,15828,'1986-08-28','1995-12-03');
 INSERT INTO salaries VALUES(10008,25828,'1994-09-15','1998-03-11');
 ```
-- 题解：
+- 题解如下：
 ```
 select e.emp_no,
 (select s.salary-sa.salary from salaries sa

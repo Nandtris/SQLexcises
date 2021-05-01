@@ -3,7 +3,7 @@
 > https://www.nowcoder.com/activity/oj 
 
 ### SQL10
-```
+```MySQL
 drop table if exists  `dept_emp` ; 
 drop table if exists  `dept_manager` ; 
 
@@ -33,7 +33,7 @@ INSERT INTO dept_manager VALUES('d001',10002,'1996-08-03','9999-01-01');
 INSERT INTO dept_manager VALUES('d002',10003,'1990-08-05','9999-01-01');
 ```
 
-- 题解：
+- 题解如下：
 ```
 SELECT e.emp_no, m.emp_no AS manager_no
 FROM dept_emp AS e

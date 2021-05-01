@@ -33,8 +33,8 @@ INSERT INTO dept_manager VALUES('d001',10002,'1996-08-03','9999-01-01');
 INSERT INTO dept_manager VALUES('d002',10003,'1990-08-05','9999-01-01');
 ```
 
-- 题解如下：
-```
+- 题解：
+```MySQL
 SELECT e.emp_no, m.emp_no AS manager_no
 FROM dept_emp AS e
 INNER JOIN dept_manager AS m
@@ -48,7 +48,7 @@ AND m.to_date='9999-01-01'
 - 请你查找薪水排名第二多的员工编号emp_no、薪水salary、last_name以及first_name，不能使用order by完成
   - order by 排序实现方法之一
   - 题目
-```
+```MySQL
 drop table if exists  `employees` ; 
 drop table if exists  `salaries` ; 
 
@@ -79,7 +79,7 @@ INSERT INTO salaries VALUES(10003,43311,'2001-12-01','9999-01-01');
 INSERT INTO salaries VALUES(10004,74057,'2001-11-27','9999-01-01');
 ```
 - 题解1：
-```
+```MySQL
 select s.emp_no, s.salary, e.last_name, e.first_name
 from salaries s join employees e
 on s.emp_no = e.emp_no
@@ -113,7 +113,7 @@ s1 	 s2
 ```
 
 - 题解2：
-```
+```MySQL
 select e.emp_no, s.salary, e.last_name, e.first_name
 from employees e
 left join salaries s
@@ -125,7 +125,7 @@ where s.salary = (
 
 
 ### SQL21
-```
+```MySQL
 drop table if exists  `employees` ; 
 drop table if exists  `salaries` ;
 
@@ -257,7 +257,7 @@ INSERT INTO salaries VALUES(10003,15828,'1986-08-28','1995-12-03');
 INSERT INTO salaries VALUES(10008,25828,'1994-09-15','1998-03-11');
 ```
 - 题解如下：
-```
+```MySQL
 select e.emp_no,
 (select s.salary-sa.salary from salaries sa
     where sa.emp_no = e.emp_no and sa.from_date = e.hire_date

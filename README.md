@@ -465,3 +465,33 @@ on d.dept_no = de.dept_no
 group by de.dept_no
 order by de.dept_no;
 ```
+
+### SQL23
+```MySQL
+drop table if exists  `salaries` ; 
+
+-- 有一个薪水表salaries简况如下:
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+
+-- 对所有员工的薪水按照salary进行按照1-N的排名，
+-- 相同salary并列且按照emp_no升序排列(column:emp_no, salary, t_rank)：
+INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01');
+INSERT INTO salaries VALUES(10002,72527,'2001-08-02','9999-01-01');
+INSERT INTO salaries VALUES(10003,43311,'2001-12-01','9999-01-01');
+INSERT INTO salaries VALUES(10004,72527,'2001-12-01','9999-01-01');
+```
+- Solution
+  - MySQL四大排名函数 row_number、rank、dense_rank、ntile
+  - reference: https://blog.csdn.net/niuchenliang524/article/details/107690207
+```MySQL
+select emp_no, salary,
+
+dense_rank() over(order by salary desc) as t_rank 
+from salaries 
+order by salary desc, emp_no;
+```

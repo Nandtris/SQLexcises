@@ -41,7 +41,7 @@ INNER JOIN dept_manager AS m
 ON e.dept_no=m.dept_no
 WHERE e.emp_no!=m.emp_no
 AND e.to_date='9999-01-01'
-AND m.to_date='9999-01-01'
+AND m.to_date='9999-01-01';
 ```
 
 ### SOL18

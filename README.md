@@ -39,9 +39,104 @@ SELECT e.emp_no, m.emp_no AS manager_no
 FROM dept_emp AS e
 INNER JOIN dept_manager AS m
 ON e.dept_no=m.dept_no
+-- key:!= 过滤经理
 WHERE e.emp_no!=m.emp_no
 AND e.to_date='9999-01-01'
 AND m.to_date='9999-01-01';
+```
+
+### SQL24
+此题对比 SQL10，都需要过滤经理
+```MySQL
+drop table if exists  `dept_emp` ; 
+drop table if exists  `dept_manager` ; 
+drop table if exists  `employees` ; 
+drop table if exists  `salaries` ; 
+
+--有一个，部门员工关系表dept_emp简况如下: 
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+
+-- 有一个部门经理表dept_manager简况如下: 
+CREATE TABLE `dept_manager` (
+`dept_no` char(4) NOT NULL,
+`emp_no` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+
+-- 有一个员工表employees简况如下:  
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+
+-- 有一个薪水表salaries简况如下: 
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+
+-- 获取所有非manager员工薪水情况，给出dept_no、emp_no以及salary，以上例子输出:
+INSERT INTO dept_emp VALUES(10001,'d001','1986-06-26','9999-01-01');
+INSERT INTO dept_emp VALUES(10002,'d001','1996-08-03','9999-01-01');
+INSERT INTO dept_emp VALUES(10003,'d004','1995-12-03','9999-01-01');
+INSERT INTO dept_emp VALUES(10004,'d004','1986-12-01','9999-01-01');
+INSERT INTO dept_emp VALUES(10005,'d003','1989-09-12','9999-01-01');
+INSERT INTO dept_emp VALUES(10006,'d002','1990-08-05','9999-01-01');
+INSERT INTO dept_emp VALUES(10007,'d005','1989-02-10','9999-01-01');
+INSERT INTO dept_emp VALUES(10008,'d005','1998-03-11','9999-01-01');
+INSERT INTO dept_emp VALUES(10009,'d006','1985-02-18','9999-01-01');
+INSERT INTO dept_emp VALUES(10010,'d006','2000-06-26','9999-01-01');
+INSERT INTO dept_manager VALUES('d001',10002,'1996-08-03','9999-01-01');
+INSERT INTO dept_manager VALUES('d002',10006,'1990-08-05','9999-01-01');
+INSERT INTO dept_manager VALUES('d003',10005,'1989-09-12','9999-01-01');
+INSERT INTO dept_manager VALUES('d004',10004,'1986-12-01','9999-01-01');
+INSERT INTO dept_manager VALUES('d005',10010,'1996-11-24','9999-01-01');
+INSERT INTO dept_manager VALUES('d006',10010,'2000-06-26','9999-01-01');
+INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
+INSERT INTO employees VALUES(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
+INSERT INTO employees VALUES(10003,'1959-12-03','Parto','Bamford','M','1986-08-28');
+INSERT INTO employees VALUES(10004,'1954-05-01','Chirstian','Koblick','M','1986-12-01');
+INSERT INTO employees VALUES(10005,'1955-01-21','Kyoichi','Maliniak','M','1989-09-12');
+INSERT INTO employees VALUES(10006,'1953-04-20','Anneke','Preusig','F','1989-06-02');
+INSERT INTO employees VALUES(10007,'1957-05-23','Tzvetan','Zielinski','F','1989-02-10');
+INSERT INTO employees VALUES(10008,'1958-02-19','Saniya','Kalloufi','M','1994-09-15');
+INSERT INTO employees VALUES(10009,'1952-04-19','Sumant','Peac','F','1985-02-18');
+INSERT INTO employees VALUES(10010,'1963-06-01','Duangkaew','Piveteau','F','1989-08-24');
+INSERT INTO employees VALUES(10011,'1953-11-07','Mary','Sluis','F','1990-01-22');
+INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01');
+INSERT INTO salaries VALUES(10002,72527,'2001-08-02','9999-01-01');
+INSERT INTO salaries VALUES(10003,43311,'2001-12-01','9999-01-01');
+INSERT INTO salaries VALUES(10004,74057,'2001-11-27','9999-01-01');
+INSERT INTO salaries VALUES(10005,94692,'2001-09-09','9999-01-01');
+INSERT INTO salaries VALUES(10006,43311,'2001-08-02','9999-01-01');
+INSERT INTO salaries VALUES(10007,88070,'2002-02-07','9999-01-01');
+INSERT INTO salaries VALUES(10009,95409,'2002-02-14','9999-01-01');
+INSERT INTO salaries VALUES(10010,94409,'2001-11-23','9999-01-01');
+INSERT INTO salaries VALUES(10011,25828,'1990-01-22','9999-01-01');
+```
+- Solution
+```MySQL
+select de.dept_no, de.emp_no, sa.salary
+from dept_emp de
+-- key: dept_no 关联
+-- 用 left 连接，考虑到诸如某个当前员工薪水缺失的问题
+-- inner 会漏掉过滤掉当前缺失薪水纪录的员工
+left join dept_manager dm on de.dept_no = dm.dept_no
+left join salaries sa on de.emp_no = sa.emp_no
+where de.emp_no != dm.emp_no
+and sa.to_date = '9999-01-01';
 ```
 
 ### SOL18

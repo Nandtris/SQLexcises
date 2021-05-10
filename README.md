@@ -676,3 +676,22 @@ MySQL中用户变量不用事前申明，在用的时候直接用“@变量名�
 select语句一般用来输出用户变量，比如select @变量名，用于输出数据源不是表格的数据。
 注意上面两种赋值符号，使用set时可以用“=”或“:=”，但是使用select时必须用“:=赋值”
 ```
+
+### SQL32
+```MySQL
+-- 将employees表的所有员工的last_name和first_name拼接起来作为Name，中间以一个空格区分
+-- (注：sqllite,字符串拼接为 || 符号，不支持concat函数，mysql支持concat函数)
+CREATE TABLE `employees` ( `emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+- Solution
+```MySQL
+-- 拼接字符：conact(a, b)
+select concat(last_name, ' ', first_name)
+from employees;
+```

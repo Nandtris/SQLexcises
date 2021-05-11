@@ -706,5 +706,55 @@ from employees;
 -- 或者unique索引，如果数据库已经存在数据，则用新数据替换，如果没有数据效果则和insert into一样；
 -- insert ignore表示，如果中已经存在相同的记录，则忽略当前新数据
 
+drop table if exists actor;
+
+CREATE TABLE actor (
+   actor_id  smallint(5)  NOT NULL PRIMARY KEY,
+   first_name  varchar(45) NOT NULL,
+   last_name  varchar(45) NOT NULL,
+   last_update  DATETIME NOT NULL);
 insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 ```
+
+- SQL36
+```MySQL
+-- 请你创建一个actor_name表(columns:first_name, last_name)
+-- 并且将actor表中的所有first_name以及last_name导入该表
+
+-- 根据 actor 表直接创建 actor_name 表，导入数据
+create table actor_name
+select first_name, last_name from actor;
+```
+- SQL37 Index
+```MySQL
+-- 添加主键，索引值必须是唯一的，且不能为NULL
+ALTER TABLE tbl_name ADD PRIMARY KEY (col_list);
+
+-- 唯一索引，这条语句创建索引的值必须是唯一的
+alter table actor add unique uniq_idx_firstname(first_name);
+
+-- 普通索引，索引值可出现多次
+alter table actor add index idx_lastname(last_name);
+
+-- 全文索引
+ALTER TABLE tbl_name ADD FULLTEXT index_name (col_list);
+
+-- 删除索引
+DROP INDEX index_name ON tbl_name; 
+ALTER TABLE tbl_name DROP INDEX index_name；
+ALTER TABLE tbl_name DROP PRIMARY KEY;
+```
+
+- SQL38 View
+```MySQL
+-- view 
+create view actor_name_view as
+select first_name as first_name_v, last_name last_name_v
+from actor;
+-- or 
+CREATE VIEW actor_name_view(first_name_v,last_name_v)
+AS SELECT first_name,last_name FROM actor;
+-- drop
+drop view view_name;
+```
+

@@ -697,7 +697,7 @@ from employees;
 ```
 
 
-### SQL
+### SQL35
 - Solution
 ```MySQL
 -- mysql中常用的三种插入数据的语句:

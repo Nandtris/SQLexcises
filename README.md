@@ -745,6 +745,23 @@ ALTER TABLE tbl_name DROP INDEX index_name；
 ALTER TABLE tbl_name DROP PRIMARY KEY;
 ```
 
+- SQL39
+```MySQL
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+
+create index idx_emp_no on salaries(emp_no);
+
+-- 强制索引
+select * 
+from salaries force index(idx_emp_no)
+where emp_no='10005';
+```
+
 - SQL38 View
 ```MySQL
 -- view 

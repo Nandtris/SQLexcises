@@ -716,7 +716,7 @@ CREATE TABLE actor (
 insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 ```
 
-- SQL36
+- SQL36 Index
 ```MySQL
 -- 请你创建一个actor_name表(columns:first_name, last_name)
 -- 并且将actor表中的所有first_name以及last_name导入该表
@@ -745,7 +745,7 @@ ALTER TABLE tbl_name DROP INDEX index_name；
 ALTER TABLE tbl_name DROP PRIMARY KEY;
 ```
 
-- SQL39
+- SQL39 强制索引
 ```MySQL
 CREATE TABLE `salaries` (
 `emp_no` int(11) NOT NULL,
@@ -775,3 +775,13 @@ AS SELECT first_name,last_name FROM actor;
 drop view view_name;
 ```
 
+- SQL40 在后面增加列并且设置默认值
+```MySQL
+alter table actor 
+add 
+create_date datetime not null 
+default '2020-10-01 00:00:00'
+after last_update;
+```
+
+- SQL 

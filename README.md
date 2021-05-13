@@ -812,7 +812,7 @@ if not exists (select 1 from t where id = 1)
       insert into t(id, update_time) values(1, getdate())
    else
       update t set update_time = getdate() where id = 1
-————————————————
+-- ————————————————
 -- 版权声明：本文为CSDN博主「risingsun001」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 -- 原文链接：https://blog.csdn.net/risingsun001/article/details/38977797
 ```
@@ -836,4 +836,15 @@ MySQL replace into 有三种形式：
 -- ————————————————
 -- 其中 “into” 关键字可以省略
 -- 对于那些没有给予值的列，MySQL 将自动为这些列赋上默认值
+```
+
+-SQL45 Alter table...
+```MySQL
+alter table titles_test rename to titles_2017;
+-- ALTER TABLE 表名 ADD 列名/索引/主键/外键等；
+-- ALTER TABLE 表名 DROP 列名/索引/主键/外键等；
+-- ALTER TABLE 表名 ALTER 仅用来改变某列的默认值；
+-- ALTER TABLE 表名 RENAME 列名/索引名 TO 新的列名/新索引名；
+-- ALTER TABLE 表名 RENAME TO/AS 新表名;
+-- https://dev.mysql.com/doc/refman/8.0/en/alter-table.html
 ```

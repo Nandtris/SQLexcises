@@ -838,7 +838,7 @@ MySQL replace into 有三种形式：
 -- 对于那些没有给予值的列，MySQL 将自动为这些列赋上默认值
 ```
 
--SQL45 Alter table...
+- SQL45 Alter table...
 ```MySQL
 alter table titles_test rename to titles_2017;
 -- ALTER TABLE 表名 ADD 列名/索引/主键/外键等；

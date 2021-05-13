@@ -788,14 +788,19 @@ after last_update;
 
 - SQL44 2Replace  <br>
 
--1- replace(x, y, z) 函数
 ```MySQL
+-- 1- replace(x, y, z) 函数
 update titles_test 
 -- emp_no-column 10005-replace-10001
 set emp_no = replace(emp_no, 10001, 10005) 
 where id = 5;
-```
 
+-- 2- MySQL replace into
+replace into titles_test
+values ('5', '10005', 'Senior Engineer',
+        '1986-06-26',
+        '9999-01-01');
+```
 -2- MySQL replace into 用法（insert into 的增强版）<br>
 在向表中插入数据的时候，经常遇到这样的情况：<br>
 1. 首先判断数据是否存在

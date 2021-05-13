@@ -784,4 +784,42 @@ default '2020-10-01 00:00:00'
 after last_update;
 ```
 
-- SQL 
+- SQL41 Trigger
+
+- SQL44 Replace into
+MySQL replace into 用法（insert into 的增强版）<br>
+在向表中插入数据的时候，经常遇到这样的情况：<br>
+1. 首先判断数据是否存在
+2. 如果不存在，则插入
+3. 如果存在，则更新
+在 SQL Server 中可以这样处理：
+```MySQL
+if not exists (select 1 from t where id = 1)
+      insert into t(id, update_time) values(1, getdate())
+   else
+      update t set update_time = getdate() where id = 1
+————————————————
+版权声明：本文为CSDN博主「risingsun001」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/risingsun001/article/details/38977797
+```
+MySQL 中有更简单的方法： replace into
+```MySQL
+replace into t(id, update_time) values(1, now());
+replace into t(id, update_time) select 1, now();
+```
+replace into 跟 insert 功能类似<br>
+不同点在于：replace into 首先尝试插入数据到表中<br>
+1. 如果发现表中已经有此行数据（根据主键或者唯一索引判断）则先删除此行数据，然后插入新的数据
+2. 否则，直接插入新数据
+
+要注意的是：插入数据的表必须有主键或者是唯一索引！<br>
+否则的话，replace into 会直接插入数据，这将导致表中出现重复的数据。<br>
+MySQL replace into 有三种形式：
+```MySQL
+1. replace into tbl_name(col_name, ...) values(...)
+2. replace into tbl_name(col_name, ...) select ...
+3. replace into tbl_name set col_name=value, ...
+-- ————————————————
+-- 其中 “into” 关键字可以省略
+-- 对于那些没有给予值的列，MySQL 将自动为这些列赋上默认值
+```

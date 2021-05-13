@@ -786,8 +786,15 @@ after last_update;
 
 - SQL41 Trigger
 
-- SQL44 Replace into
-MySQL replace into 用法（insert into 的增强版）<br>
+- SQL44 2Replace  <br>
+
+-1 replace(x, y, z)
+```MySQL
+update titles_test 
+set emp_no = replace(emp_no, 10001, 10005)
+where id = 5;
+```
+-2 MySQL replace into 用法（insert into 的增强版）<br>
 在向表中插入数据的时候，经常遇到这样的情况：<br>
 1. 首先判断数据是否存在
 2. 如果不存在，则插入
@@ -799,8 +806,8 @@ if not exists (select 1 from t where id = 1)
    else
       update t set update_time = getdate() where id = 1
 ————————————————
-版权声明：本文为CSDN博主「risingsun001」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/risingsun001/article/details/38977797
+-- 版权声明：本文为CSDN博主「risingsun001」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+-- 原文链接：https://blog.csdn.net/risingsun001/article/details/38977797
 ```
 MySQL 中有更简单的方法： replace into
 ```MySQL

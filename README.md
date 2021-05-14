@@ -848,3 +848,36 @@ alter table titles_test rename to titles_2017;
 -- ALTER TABLE 表名 RENAME TO/AS 新表名;
 -- https://dev.mysql.com/doc/refman/8.0/en/alter-table.html
 ```
+
+- SQL48 Update + Subquery
+```MySQL
+-- 请你写出更新语句，将所有获取奖金的员工当前的(salaries.to_date='9999-01-01')薪水增加10%
+-- (emp_bonus里面的emp_no都是当前获奖的所有员工)
+create table emp_bonus(
+emp_no int not null,
+btype smallint not null);
+
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL, PRIMARY KEY (`emp_no`,`from_date`));
+
+INSERT INTO emp_bonus VALUES (10001,1);
+INSERT INTO salaries VALUES(10001,85097,'2001-06-22','2002-06-22');
+INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01'); 
+```
+- Solution
+```MySQL
+update salaries set salary=salary+salary*0.1
+where to_date = '9999-01-01'
+and salary in (
+-- both [select * from] and [tmp_salary] lost
+-- SQL_ERROR_INFO: "You can't specify target table 'salaries' for update in FROM clause"
+    select * from (  
+        select sa.salary as sasa from salaries sa
+        left join emp_bonus eb 
+	-- sigle [tmp_salary] lost 
+	-- SQL_ERROR_INFO: 'Every derived table must have its own alias'
+        on sa.emp_no = eb.emp_no) tmp_salary);
+```

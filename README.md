@@ -895,7 +895,7 @@ and salary in (
 2.其他编码下,一个汉字算两个字符, 一个数字或字母算一个字符。
 
 字符串替换：<br>
-REPLACE(s,s1,s2)，将字符串 s2 替代字符串 s 中的字符串 s1
+`REPLACE(s,s1,s2)` 将字符串 s2 替代字符串 s 中的字符串 s1
 ```MySQL
 -- 查找字符串'10,A,B' 中逗号','出现的次数cnt
 select (length('10,A,B')-length(replace('10,A,B',',',''))) cnt;

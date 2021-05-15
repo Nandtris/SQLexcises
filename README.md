@@ -935,3 +935,31 @@ select (sum(salary)-max(salary)-min(salary))/
 from salaries where to_date= '9999-01-01';
 ```
 
+- SQL57 exists
+```MySQL
+-- 使用含有关键字exists查找未分配具体部门的员工的所有信息
+
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+```
+- Solution
+```MySQL
+select * from employees em
+where not exists(
+select de.dept_no from dept_emp de
+where de.emp_no = em.emp_no);
+```
+

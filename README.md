@@ -882,6 +882,7 @@ and salary in (
         on sa.emp_no = eb.emp_no) tmp_salary);
 ```
 
+
 - SQL51
 
 统计字符串长度：<br>
@@ -900,3 +901,37 @@ and salary in (
 -- 查找字符串'10,A,B' 中逗号','出现的次数cnt
 select (length('10,A,B')-length(replace('10,A,B',',',''))) cnt;
 ```
+
+
+- SQL52 截取字符串
+  - left/right(string, length)
+  - substr(sting, pos, length)
+```MySQL
+select first_name from employees 
+order by right(first_name, 2); -- 从右开始向左，取2个字符
+
+select first_name from employees -- 等价上面语句
+order by substr(first_name, -2, 2);
+
+select first_name from employees
+order by substr(first_name, -1, 2); -- 正向截取，在最后一个位置，向后取2个字符，但此处只有一个字符，第二个为空
+```
+
+
+- SQL53 group_concat()---group by
+```MySQL
+-- group_concat([distinct] 要连接的字段 [order by 排序字段 asc/desc] [separator '分隔符'])
+-- 分隔符默认“,”
+-- group_concat(emp_no ，',') 则会每个字符串后面多一个','---> 10001,,10002,
+-- group_concat(emp_no separator',') ---> 10001,10002
+select dept_no, group_concat(emp_no)as employees
+from dept_emp group by dept_no;
+```
+
+- SQL53 avg = (sum()-max()-min())/(count(1)-2)
+```MySQL
+select (sum(salary)-max(salary)-min(salary))/
+(count(1)-2) avg_salary
+from salaries where to_date= '9999-01-01';
+```
+

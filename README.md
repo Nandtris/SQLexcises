@@ -139,7 +139,7 @@ where de.emp_no != dm.emp_no
 and sa.to_date = '9999-01-01';
 ```
 
-SQL25 
+### SQL25 
 考点同24，10，更复杂
 ```MySQL
 drop table if exists  `dept_emp` ; 
@@ -703,7 +703,7 @@ AND s2.to_date = "9999-01-01"
 GROUP BY s2.emp_no
 
 ```
-- SQL61 窗口函数
+### SQL61 窗口函数
 ```MySQl
 -- 对于employees表中，输出first_name排名(按first_name升序排序)为奇数的first_name
 
@@ -773,7 +773,7 @@ CREATE TABLE actor (
 insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 ```
 
-- SQL36 Index
+### SQL36 Index
 ```MySQL
 -- 请你创建一个actor_name表(columns:first_name, last_name)
 -- 并且将actor表中的所有first_name以及last_name导入该表
@@ -782,7 +782,7 @@ insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 create table actor_name
 select first_name, last_name from actor;
 ```
-- SQL37 Index
+### SQL37 Index
 ```MySQL
 -- 添加主键，索引值必须是唯一的，且不能为NULL
 ALTER TABLE tbl_name ADD PRIMARY KEY (col_list);
@@ -802,7 +802,7 @@ ALTER TABLE tbl_name DROP INDEX index_name；
 ALTER TABLE tbl_name DROP PRIMARY KEY;
 ```
 
-- SQL39 强制索引
+### SQL39 强制索引
 ```MySQL
 CREATE TABLE `salaries` (
 `emp_no` int(11) NOT NULL,
@@ -819,7 +819,7 @@ from salaries force index(idx_emp_no)
 where emp_no='10005';
 ```
 
-- SQL38 View
+### SQL38 View
 ```MySQL
 -- view 
 create view actor_name_view as
@@ -832,7 +832,7 @@ AS SELECT first_name,last_name FROM actor;
 drop view view_name;
 ```
 
-- SQL40 在后面增加列并且设置默认值
+### SQL40 在后面增加列并且设置默认值
 ```MySQL
 alter table actor 
 add 
@@ -841,9 +841,9 @@ default '2020-10-01 00:00:00'
 after last_update;
 ```
 
-- SQL41 Trigger
+### SQL41 Trigger
 
-- SQL44 2Replace  <br>
+### SQL44 2Replace  <br>
 
 ```MySQL
 -- 1- replace(x, y, z) 函数
@@ -895,7 +895,7 @@ MySQL replace into 有三种形式：
 -- 对于那些没有给予值的列，MySQL 将自动为这些列赋上默认值
 ```
 
-- SQL45 Alter table...
+### SQL45 Alter table...
 ```MySQL
 alter table titles_test rename to titles_2017;
 -- ALTER TABLE 表名 ADD 列名/索引/主键/外键等；
@@ -906,7 +906,7 @@ alter table titles_test rename to titles_2017;
 -- https://dev.mysql.com/doc/refman/8.0/en/alter-table.html
 ```
 
-- SQL48 Update + Subquery
+### SQL48 Update + Subquery
 ```MySQL
 -- 请你写出更新语句，将所有获取奖金的员工当前的(salaries.to_date='9999-01-01')薪水增加10%
 -- (emp_bonus里面的emp_no都是当前获奖的所有员工)
@@ -940,7 +940,7 @@ and salary in (
 ```
 
 
-- SQL51
+### SQL51
 
 统计字符串长度：<br>
 `char_length('string')/char_length(column_name)`<br>
@@ -960,7 +960,7 @@ select (length('10,A,B')-length(replace('10,A,B',',',''))) cnt;
 ```
 
 
-- SQL52 截取字符串
+### SQL52 截取字符串
   - left/right(string, length)
   - substr(sting, pos, length)
 ```MySQL
@@ -975,7 +975,7 @@ order by substr(first_name, -1, 2); -- 正向截取，在最后一个位置，�
 ```
 
 
-- SQL53 group_concat()---group by
+### SQL53 group_concat()---group by
 ```MySQL
 -- group_concat([distinct] 要连接的字段 [order by 排序字段 asc/desc] [separator '分隔符'])
 -- 分隔符默认“,”
@@ -984,15 +984,14 @@ order by substr(first_name, -1, 2); -- 正向截取，在最后一个位置，�
 select dept_no, group_concat(emp_no)as employees
 from dept_emp group by dept_no;
 ```
-
-- SQL53 avg = (sum()-max()-min())/(count(1)-2)
+### SQL53 avg = (sum()-max()-min())/(count(1)-2)
 ```MySQL
 select (sum(salary)-max(salary)-min(salary))/
 (count(1)-2) avg_salary
 from salaries where to_date= '9999-01-01';
 ```
 
-- SQL57 exists
+### SQL57 exists
 ```MySQL
 -- 使用含有关键字exists查找未分配具体部门的员工的所有信息
 

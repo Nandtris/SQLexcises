@@ -667,7 +667,7 @@ dense_rank() over(order by salary desc) as t_rank
 from salaries 
 order by salary desc, emp_no;
 ```
-- other
+- 窗口函数
 ```MySQL
 -- 用户变量，在客户端链接到数据库实例整个过程中用户变量都是有效的。
 -- MySQL中用户变量不用事前申明，在用的时候直接用“@变量名”使用就可以了。
@@ -703,6 +703,36 @@ AND s2.to_date = "9999-01-01"
 GROUP BY s2.emp_no
 
 ```
+- SQL61 窗口函数
+```MySQl
+-- 对于employees表中，输出first_name排名(按first_name升序排序)为奇数的first_name
+
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+
+如，输入为：
+INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
+INSERT INTO employees VALUES(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
+INSERT INTO employees VALUES(10005,'1955-01-21','Kyoichi','Maliniak','M','1989-09-12');
+INSERT INTO employees VALUES(10006,'1953-04-20','Anneke','Preusig','F','1989-06-02');
+```
+- Solution # 窗口函数产生的临时表作为from 表源 #
+```MySQL
+select first_name
+from(select emp_no, first_name,
+    dense_rank() over (order by first_name) as odd
+    from employees ) tmp --派生表必须加别名 tmp
+where odd % 2 = 1
+order by emp_no;
+```
+
+
 
 ### SQL32
 ```MySQL

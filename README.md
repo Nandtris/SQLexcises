@@ -668,13 +668,40 @@ from salaries
 order by salary desc, emp_no;
 ```
 - other
-```
-用户变量，在客户端链接到数据库实例整个过程中用户变量都是有效的。
-MySQL中用户变量不用事前申明，在用的时候直接用“@变量名”使用就可以了。
-第一种用法：set @num=1; 或set @num:=1; //这里要使用set语句创建并初始化变量，直接使用@num变量
-第二种用法：select @num:=1; 或 select @num:=字段名 from 表名 where ……，
-select语句一般用来输出用户变量，比如select @变量名，用于输出数据源不是表格的数据。
-注意上面两种赋值符号，使用set时可以用“=”或“:=”，但是使用select时必须用“:=赋值”
+```MySQL
+-- 用户变量，在客户端链接到数据库实例整个过程中用户变量都是有效的。
+-- MySQL中用户变量不用事前申明，在用的时候直接用“@变量名”使用就可以了。
+-- 第一种用法：set @num=1; 或set @num:=1; //这里要使用set语句创建并初始化变量，直接使用@num变量
+-- 第二种用法：select @num:=1; 或 select @num:=字段名 from 表名 where ……，
+-- select语句一般用来输出用户变量，比如select @变量名，用于输出数据源不是表格的数据。
+-- 注意上面两种赋值符号，使用set时可以用“=”或“:=”，但是使用select时必须用“:=赋值”
+
+-- 实现cumsum（累加）的功能
+SET @csum := 0;
+SELECT 日期, 净利润, (@csum := @csum + 净利润) AS 累计利润
+FROM daily_pnl_view;
+
+-- 窗口函数
+-- https://zhuanlan.zhihu.com/p/92654574
+-- <窗口函数> over (partition by <用于分组的列名>
+--                     order by <用于排序的列名>)
+SELECT emp_no,salary,
+SUM(salary) OVER (ORDER BY emp_no) AS running_total
+FROM salaries
+WHERE to_date = '9999-01-01';
+
+-- reference:
+-- 把所有小于等于当前编号的表s1和当前编号表s2联立起来，
+-- 然后按照当前编号分组，计算出所有小于等于
+-- 当前标号的工资总数
+SELECT s2.emp_no,s2.salary,SUM(s1.salary) AS running_total
+FROM salaries AS s1 INNER JOIN salaries AS s2 
+ON s1.emp_no <= s2.emp_no
+WHERE 
+s1.to_date = "9999-01-01"
+AND s2.to_date = "9999-01-01"
+GROUP BY s2.emp_no
+
 ```
 
 ### SQL32

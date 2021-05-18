@@ -1067,7 +1067,7 @@ INSERT INTO user VALUES
 ```
 - Solution
   - 预警 STUPID！
-```MySQL
+```MySQL 8.0
 -- this is STUPID---failure
 select tmp1.edate , round(tmp2.nocomp/tmp1.tsum, 3) p
 from 

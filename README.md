@@ -1020,7 +1020,7 @@ where de.emp_no = em.emp_no);
 ```
 
 
-###SQL65 异常邮件概率=(case...when\sum(type="complete"))/count(*)
+### SQL65 异常邮件概率=(case...when\sum(type="complete"))/count(*)
 ```MySQL
 -- 现在有一个需求，让你统计正常用户发送给正常用户邮件失败的概率:
 -- 有一个邮件(email)表，id为主键， type是枚举类型，

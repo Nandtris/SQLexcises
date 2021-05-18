@@ -1086,14 +1086,26 @@ where user.is_blacklist != 1 and email.type = 'no_completed' group by email.date
 on tmp1.edate = tmp2.edate2;
 ```
 ```MySQL
--- Sucess one
+-- Sucess one: join...on...and...
+select e.date, round(
+    sum(case when e.type = 'no_completed' then 1 else 0 end)/count(e.type), 3) p
+from email e -- 2/3=.67 email.date='2020-01-11'
+-- A left join B ... on ...and ... > Failure 2/4=.5 email.date='2020-01-11'
+-- bcause of: A 主表，连表A表里面有的项都显示，若B中没有关联项，A中显示NULL 
+-- 虽然筛掉了不合条件的项，但是表格中依旧存在此行，只是显示值为 NULL ，所以计算概率时多了一行
+-- 此时应该去掉 and，把相关筛选条件放到 where 则成功
+-- reference: https://blog.csdn.net/didiliu_1111/article/details/80430957
+join user u1 on (e.send_id = u1.id and u1.is_blacklist != 1)
+join user u2 on (e.receive_id = u2.id and u2.is_blacklist != 1)
+group by e.date order by e.date;
+
+-- left join...on...where
 select e.date, round(
     sum(case when e.type = 'no_completed' then 1 else 0 end)/count(e.type), 3) p
 from email e
--- left join ... on ...and ... > Failure
-join user u1 on (e.send_id = u1.id and u1.is_blacklist != 1)
-join user u2 on (e.receive_id = u2.id and u2.is_blacklist != 1)
--- where u1.is_blacklist != 1 and u2.is_blacklist != 1
+left join user u1 on (e.send_id = u1.id )
+left join user u2 on (e.receive_id = u2.id)
+where u1.is_blacklist != 1 and u2.is_blacklist != 1
 group by e.date order by e.date;
 
 -- Another way

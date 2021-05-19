@@ -1117,3 +1117,81 @@ join user u2 on (e.receive_id = u2.id and u2.is_blacklist != 1)
 group by e.date order by e.date;
 ```
 
+### SQL67 Group by 求聚合函数与条目不匹配问题
+```MySQL8.0
+drop table if exists login;
+drop table if exists user;
+drop table if exists client;
+
+-- 登录(login)记录表，简况如下:
+CREATE TABLE `login` (
+`id` int(4) NOT NULL,
+`user_id` int(4) NOT NULL,
+`client_id` int(4) NOT NULL,
+`date` date NOT NULL,
+PRIMARY KEY (`id`));
+
+-- 用户(user)表，简况如下:
+CREATE TABLE `user` (
+`id` int(4) NOT NULL,
+`name` varchar(32) NOT NULL,
+PRIMARY KEY (`id`));
+
+-- 客户端(client)表，简况如下:
+CREATE TABLE `client` (
+`id` int(4) NOT NULL,
+`name` varchar(32) NOT NULL,
+PRIMARY KEY (`id`));
+
+-- 请你写出一个sql语句查询每个用户最近一天登录的日子，
+-- 用户的名字，以及用户用的设备的名字，
+-- 并且查询结果按照user的name升序排序
+
+-- select*, max(date) from login group by user_id;
+-- result, 分组求max，返回结果max列不与其他列匹配
+-- 1 1|2|1|2020-10-12|2020-10-13
+-- 2 2|3|2|2020-10-12|2020-10-13
+INSERT INTO login VALUES
+(1,2,1,'2020-10-12'),
+(2,3,2,'2020-10-12'),
+(3,2,2,'2020-10-13'),
+(4,3,2,'2020-10-13');
+
+INSERT INTO user VALUES
+(1,'tm'),
+(2,'fh'),
+(3,'wangchao');
+
+INSERT INTO client VALUES
+(1,'pc'),
+(2,'ios'),
+(3,'anroid'),
+(4,'h5');
+```
+- Solution
+```MySQL
+-- 误区
+-- max(date)：包括12 13号，最终用where...in...筛选时就出错，不能体现出最大日期
+-- 所以where...in...里条件应是：(user_id, max(date))
+-- 1 	fh|pc|2020-10-12		
+-- 2 	fh|ios|2020-10-13	 1 	fh|ios|2020-10-13
+-- 3 	tm|anroid|2020-10-12	 2 	tm|anroid|2020-10-12
+-- 4 	wangchao|ios|2020-10-12		
+-- 5 	wangchao|ios|2020-10-13	 3 	wangchao|ios|2020-10-13
+select  u.name u_n, c.name c_n, date 
+from login l 
+left join user u on l.user_id = u.id
+left join client c on l.client_id = c.id
+where date in(
+select max(date) from login group by user_id)
+order by u.name;
+
+
+select  u.name u_n, c.name c_n, date 
+from login l 
+left join user u on l.user_id = u.id
+left join client c on l.client_id = c.id
+where (user_id, date) in(
+select user_id, max(date) from login group by user_id)
+order by u.name;
+```

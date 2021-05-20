@@ -1195,3 +1195,27 @@ where (user_id, date) in(
 select user_id, max(date) from login group by user_id)
 order by u.name;
 ```
+
+
+### SQL
+
+- Hard
+```MySQL8.0
+-- 牛客每天有很多人登录，请你统计一下牛客每个日期登录新用户个数
+-- 并且查询结果按照日期升序排序
+
+select tmp2.date, count(tmp.user_id) new from (
+    select user_id, min(date) mdate from login group by user_id) tmp
+right join 
+    (select distinct date from login) tmp2
+on tmp.mdate = tmp2.date
+group by tmp2.date;
+
+
+-- Not undersande
+select distinct date,
+    sum(case when (user_id, date) in 
+       (select user_id, min(date) from login group by user_id)
+       then 1 else 0 end)
+from login  order by date;
+```

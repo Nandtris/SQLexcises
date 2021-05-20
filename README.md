@@ -1197,7 +1197,7 @@ order by u.name;
 ```
 
 
-### SQL
+### SQL69
 
 - Hard
 ```MySQL8.0

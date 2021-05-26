@@ -1219,3 +1219,40 @@ select distinct date,
        then 1 else 0 end)
 from login  order by date;
 ```
+
+
+## Review
+- None
+
+## SQL73 根据表单条件求均值?
+```MySQL8.0
+drop table if exists grade;
+CREATE TABLE  grade(
+`id` int(4) NOT NULL,
+`job` varchar(32) NOT NULL,
+`score` int(10) NOT NULL,
+PRIMARY KEY (`id`));
+
+-- 写一个sql语句查询用户分数大于
+-- 其所在工作(job)分数的平均分的所有grade的属性，
+-- 并且以id的升序排序
+INSERT INTO grade VALUES
+(1,'C++',11001),
+(2,'C++',10000),
+(3,'C++',9000),
+(4,'Java',12000),
+(5,'Java',13000),
+(6,'JS',12000),
+(7,'JS',11000),
+(8,'JS',9999),
+(9,'Java',12500);
+```
+- Solution 
+- 根据表单条件求均值, 不用 join 连接
+```MySQL8.0
+select id, job, score from grade a
+where score > ( 
+    select round(avg(score), 3) from grade b
+    where a.job = b.job)
+order by id;
+```

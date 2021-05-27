@@ -1290,3 +1290,16 @@ from grade
 group by job
 order by job;
 ```
+- SQL76 奇妙解法
+- 写一个sql语句查询各个岗位分数的中位数位置上的所有grade信息，
+- 并且按id升序排序(题干同上）
+  - 无论奇偶:`[中位数的位置]-[(每类job总个数+1)/2] < 1`
+```MySQL 8.0
+select id, job, score, r_rank
+from (select *,
+     (row_number() over (partition by job order by score desc)) r_rank,
+     (count(score) over (partition by job)) num
+     from grade ) t1
+where abs(t1.r_rank-(t1.num+1)/2) < 1
+order by id;
+```

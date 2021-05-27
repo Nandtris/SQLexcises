@@ -1200,7 +1200,7 @@ order by u.name;
 ### SQL69
 
 - Hard
-```MySQL8.0
+```MySQL 8.0
 -- 牛客每天有很多人登录，请你统计一下牛客每个日期登录新用户个数
 -- 并且查询结果按照日期升序排序
 
@@ -1225,7 +1225,7 @@ from login  order by date;
 - None
 
 ## SQL73 根据表单条件求均值?
-```MySQL8.0
+```MySQL 8.0
 drop table if exists grade;
 CREATE TABLE  grade(
 `id` int(4) NOT NULL,
@@ -1249,7 +1249,7 @@ INSERT INTO grade VALUES
 ```
 - Solution 
 - 根据表单条件求均值, 不用 join 连接
-```MySQL8.0
+```MySQL 8.0
 select id, job, score from grade a
 where score > ( 
     select round(avg(score), 3) from grade b
@@ -1260,7 +1260,7 @@ order by id;
 
 
 ### SQL75 寻找中位数算法-简洁优雅
-```MySQL8.0
+```MySQL 8.0
 -- 牛客每次考试完，都会有一个成绩表(grade)，如下:
 drop table if exists grade;
 CREATE TABLE  grade(
@@ -1282,7 +1282,7 @@ INSERT INTO grade VALUES
 (8,'B',9999);
 ```
 - Solution
-```MySQL8.0
+```MySQL 8.0
 select job,
     floor((count(*) + 1)/ 2) as 'start',
     floor((count(*) + 2)/ 2) as 'end'

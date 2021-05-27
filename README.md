@@ -1256,3 +1256,37 @@ where score > (
     where a.job = b.job)
 order by id;
 ```
+
+
+
+### SQL75 寻找中位数算法-简洁优雅
+```MySQL8.0
+-- 牛客每次考试完，都会有一个成绩表(grade)，如下:
+drop table if exists grade;
+CREATE TABLE  grade(
+`id` int(4) NOT NULL,
+`job` varchar(32) NOT NULL,
+`score` int(10) NOT NULL,
+PRIMARY KEY (`id`));
+
+-- 写一个sql语句查询各个岗位分数升序排列之后的中位数位置的范围，
+-- 并且按job升序排序
+INSERT INTO grade VALUES
+(1,'C++',11001),
+(2,'C++',10000),
+(3,'C++',9000),
+(4,'Java',12000),
+(5,'Java',13000),
+(6,'B',12000),
+(7,'B',11000),
+(8,'B',9999);
+```
+- Solution
+```MySQL8.0
+select job,
+    floor((count(*) + 1)/ 2) as 'start',
+    floor((count(*) + 2)/ 2) as 'end'
+from grade
+group by job
+order by job;
+```

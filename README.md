@@ -1259,7 +1259,7 @@ order by id;
 
 
 
-### SQL75 寻找中位数算法-简洁优雅
+   寻找中位数算法-简洁优雅
 ```MySQL 8.0
 -- 牛客每次考试完，都会有一个成绩表(grade)，如下:
 drop table if exists grade;
@@ -1302,4 +1302,18 @@ from (select *,
      from grade ) t1
 where abs(t1.r_rank-(t1.num+1)/2) < 1
 order by id;
+```
+
+### SQL78
+- usage: where group having 
+```MySQL 8.0
+select user_id 
+from order_info
+where date>'2025-10-15'
+and product_name in ('C++', 'Python', 'Java')
+and status="completed"
+
+group by user_id
+having count(product_name)>1
+order by user_id;
 ```

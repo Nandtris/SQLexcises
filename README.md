@@ -1379,3 +1379,64 @@ group by user_id
 having count(product_name)>1
 order by user_id;
 ```
+
+### SQL
+
+```MySQL 8.0
+drop table if exists order_info;
+drop table if exists client;
+CREATE TABLE order_info (
+id int(4) NOT NULL,
+user_id int(11) NOT NULL,
+product_name varchar(256) NOT NULL,
+status varchar(32) NOT NULL,
+client_id int(4) NOT NULL,
+date date NOT NULL,
+is_group_buy varchar(32) NOT NULL,
+PRIMARY KEY (id));
+
+CREATE TABLE client(
+id int(4) NOT NULL,
+name varchar(32) NOT NULL,
+PRIMARY KEY (id)
+);
+
+-- 请你写出一个sql语句查询在2025-10-15以后，
+-- 同一个用户下单2个以及2个以上状态为购买成功的C++课程或Java课程或Python课程的来源信息，
+-- 第一列是显示的是客户端名字，如果是拼团订单则显示GroupBuy，
+-- 第二列显示这个客户端(或者是拼团订单)有多少订单，
+-- 最后结果按照第一列(source)升序排序
+INSERT INTO order_info VALUES
+(1,557336,'C++','no_completed',1,'2025-10-10','No'),
+(2,230173543,'Python','completed',2,'2025-10-12','No'),
+(3,57,'JS','completed',0,'2025-10-23','Yes'),
+(4,57,'C++','completed',3,'2025-10-23','No'),
+(5,557336,'Java','completed',0,'2025-10-23','Yes'),
+(6,57,'Java','completed',1,'2025-10-24','No'),
+(7,557336,'C++','completed',0,'2025-10-25','Yes');
+
+INSERT INTO client VALUES
+(1,'PC'),
+(2,'Android'),
+(3,'IOS'),
+(4,'H5');
+```
+- Solution 
+- case when 匹配操作: join连表后, 可以赋值， 也可以用其他表的列名匹配相关项
+  - `case when o.is_group_buy='Yes' then 'GroupBuy' else c.name end`
+
+```MySQL 8.0
+select tmp.source, count(*) cn 
+from(select count(*) over(partition by o.user_id) as r,
+     -- case when 与 join 连表操作
+     case when o.is_group_buy='Yes' then 'GroupBuy' else c.name end source
+     from order_info o
+     left join client c 
+     on c.id = o.client_id
+     where o.date > '2025-10-15'
+     and o.status = 'completed'
+     and o.product_name in('C++', 'Python', 'Java')
+) tmp 
+where tmp.r >=2
+group by tmp.source order by tmp.source;
+```

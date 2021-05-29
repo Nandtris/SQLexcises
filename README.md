@@ -1380,7 +1380,7 @@ having count(product_name)>1
 order by user_id;
 ```
 
-### SQL87
+### SQL83
 
 ```MySQL 8.0
 drop table if exists order_info;

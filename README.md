@@ -1440,3 +1440,18 @@ from(select count(*) over(partition by o.user_id) as r,
 where tmp.r >=2
 group by tmp.source order by tmp.source;
 ```
+
+### SQL85 筛选日期
+- 年-月
+```MySQL 8.0
+left('2025-02-23', 7);
+date_format('2025-02-23', '%Y-%m');
+caoncat(year(date), '-', month(date));
+```
+- 某年
+```MySQL 8.0
+date like '2025%';
+date between '2025-01-01' and '2025-12-31';
+```
+- 年/月/日+1
+`UPDATE table SET date = DATE_ADD(date, INTERVAL 1 YEAR/month/day)`

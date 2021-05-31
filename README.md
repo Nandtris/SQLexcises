@@ -1302,6 +1302,34 @@ from (select *,
 where abs(t1.r_rank-(t1.num+1)/2) < 1
 order by id;
 ```
+### SQL88 分组后寻找中位数
+```MySQL 8.0
+drop table if exists class_grade;
+CREATE TABLE class_grade (
+grade varchar(32) NOT NULL,
+number int(4) NOT NULL
+);
+
+INSERT INTO class_grade VALUES
+('A',2),
+('C',4),
+('B',4),
+('D',2);
+
+```
+- Solution 
+- 正序/2 和 逆序/2 取交集得到中位数
+
+``` MySQL 8.0
+select grade from(
+select grade, 
+    (select sum(number)/2 from class_grade) t,
+    sum(number) over(order by grade) a, 
+    sum(number) over(order by grade desc) b
+    from class_grade ) tmp
+where a >= t and b >= t
+order by grade;
+```
 
 
 ### SQL81 订单分析之找一二次购买时间
@@ -1455,3 +1483,4 @@ date between '2025-01-01' and '2025-12-31';
 ```
 - 年/月/日+1
 `UPDATE table SET date = DATE_ADD(date, INTERVAL 1 YEAR/month/day)`
+

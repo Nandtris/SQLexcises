@@ -1484,3 +1484,16 @@ date between '2025-01-01' and '2025-12-31';
 - 年/月/日+1
 `UPDATE table SET date = DATE_ADD(date, INTERVAL 1 YEAR/month/day)`
 
+## SQL关键字顺序
+```MySQL 8.0
+SELECT [DISTINCT|DISINCTROW|ALL] select_expression,... -- 查询结果
+[FROM table_references -- 指定查询的表
+[WHERE where_definition] -- where子句，查询数据的过滤条件
+[GROUP BY col_name,...] -- 对[匹配where子句的]查询结果进行分组
+[HAVING where_definition] -- 对分组后的结果进行条件限制
+[ORDER BY{unsigned_integer | col_name | formula} [ASC | DESC],...] -- 对查询结果进行排序
+[LIMIT [offset,] rows] -- 对查询的显示结果进行条数限制
+[PROCEDURE procedure_name] --查询存储过程返回的结果集数据
+]
+-- 原文链接：https://blog.csdn.net/bestforxu/article/details/51131234
+```

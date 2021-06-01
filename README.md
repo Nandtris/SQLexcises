@@ -1331,6 +1331,62 @@ where a >= t and b >= t
 order by grade;
 ```
 
+## 排序专题
+### SQL91 if函数转换负数，窗口函数定名次
+```MySQL 8.0
+drop table if exists user;
+drop table if exists grade_info;
+
+CREATE TABLE user (
+id  int(4) NOT NULL,
+name varchar(32) NOT NULL
+);
+
+CREATE TABLE grade_info (
+user_id  int(4) NOT NULL,
+grade_num int(4) NOT NULL,
+type varchar(32) NOT NULL
+);
+
+INSERT INTO user VALUES
+(1,'tm'),
+(2,'wwy'),
+(3,'zk'),
+(4,'qq'),
+(5,'lm');
+
+INSERT INTO grade_info VALUES
+(1,3,'add'),
+(2,3,'add'),
+(1,1,'reduce'),
+(3,3,'add'),
+(4,3,'add'),
+(5,3,'add'),
+(3,1,'reduce');
+
+-- 请你写一个SQL查找积分最高的用户的id，
+-- 名字，以及他的总积分是多少(可能有多个)，
+-- 查询结果按照id升序排序
+-- result
+2|wwy|3
+4|qq|3
+5|lm|3
+```
+- Solution 
+```MySQL 8.0
+select t2.tid, u.name, t2.tsum
+from (select
+      user_id tid, 
+      sumg tsum, 
+      dense_rank() over(order by t.sumg desc) grade_sum
+      from (select user_id, 
+            sum(if(type='reduce', -grade_num, grade_num)) sumg
+            from grade_info group by user_id
+           ) t
+     ) t2
+join user u on u.id = t2.tid
+where t2.grade_sum = 1;
+```
 
 ### SQL81 订单分析之找一二次购买时间
 - 排序问题：寻找第一，第二，第三...通用算法

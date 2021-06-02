@@ -690,6 +690,7 @@ SUM(salary) OVER (ORDER BY emp_no) AS running_total
 FROM salaries
 WHERE to_date = '9999-01-01';
 
+
 -- reference:
 -- 把所有小于等于当前编号的表s1和当前编号表s2联立起来，
 -- 然后按照当前编号分组，计算出所有小于等于
@@ -703,6 +704,87 @@ AND s2.to_date = "9999-01-01"
 GROUP BY s2.emp_no
 
 ```
+### SQL71 按日期统计同一用户累计刷题数
+- 窗口函数解法
+- 笛卡儿积筛法（refer to above SQL23)
+  - t1.user_id = t2.user_id 同一用户
+  - and t1.date >= t2.date 截至当前某用户累计天数
+```MySQL 8.0
+
+CREATE TABLE `login` (
+`id` int(4) NOT NULL,
+`user_id` int(4) NOT NULL,
+`client_id` int(4) NOT NULL,
+`date` date NOT NULL,
+PRIMARY KEY (`id`));
+
+CREATE TABLE `passing_number` (
+`id` int(4) NOT NULL,
+`user_id` int(4) NOT NULL,
+`number` int(4) NOT NULL,
+`date` date NOT NULL,
+PRIMARY KEY (`id`));
+
+CREATE TABLE `user` (
+`id` int(4) NOT NULL,
+`name` varchar(32) NOT NULL,
+PRIMARY KEY (`id`));
+
+CREATE TABLE `client` (
+`id` int(4) NOT NULL,
+`name` varchar(32) NOT NULL,
+PRIMARY KEY (`id`));
+
+
+-- 请你写出一个sql语句查询刷题信息，包括: 
+-- 用户的名字，以及截止到某天，累计总共通过了多少题，
+-- 并且查询结果先按照日期升序排序，再按照姓名升序排序，
+-- 有登录却没有刷题的哪一天的数据不需要输出
+INSERT INTO login VALUES
+(1,2,1,'2020-10-12'),
+(2,3,2,'2020-10-12'),
+(3,2,2,'2020-10-13'),
+(4,3,2,'2020-10-13');
+
+INSERT INTO passing_number VALUES
+(1,2,4,'2020-10-12'),
+(2,3,1,'2020-10-12'),
+(3,2,0,'2020-10-13'),
+(4,3,2,'2020-10-13');
+
+INSERT INTO user VALUES
+(1,'tm'),
+(2,'fh'),
+(3,'wc');
+
+INSERT INTO client VALUES
+(1,'pc'),
+(2,'ios'),
+(3,'anroid'),
+(4,'h5');
+```
+- Solution
+```MySQL 8.0
+-- 窗口函数汇总累计和
+select user.name, tmp.date, tmp.sumn
+from (
+    -- sum() over(partition by ...) 分组后每行显示每组总和
+    -- sum() over(partition by ... order by ...) 分组后每行显示截至当前行累计和
+    select user_id, sum(number) over(partition by user_id order by date) sumn, date
+    from passing_number
+) tmp join user on user.id = tmp.user_id
+order by tmp.date, user.name;
+
+-- “截至到某一天，某一用户累计通过多少道题”算法原理
+# select pn1.user_id,pn1.date,sum(pn2.number) 
+# from passing_number pn1,passing_number pn2 
+--  笛卡儿积筛法
+  -- t1.user_id = t2.user_id 同一用户
+  -- and t1.date >= t2.date 截至当前某用户累计天数
+# where pn1.user_id = pn2.user_id and pn1.date>=pn2.date 
+# group by pn1.user_id,pn1.date;
+```
+
 ### SQL61 窗口函数
 ```MySQl
 -- 对于employees表中，输出first_name排名(按first_name升序排序)为奇数的first_name

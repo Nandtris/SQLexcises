@@ -216,85 +216,6 @@ and sa.to_date = '9999-01-01' -- 保证是当前职工
 and sa2.to_date = '9999-01-01';
 ```
 
-### SOL18
-- 请你查找薪水排名第二多的员工编号emp_no、薪水salary、last_name以及first_name，不能使用order by完成
-  - order by 排序实现方法之一
-  - 题目
-```MySQL
-drop table if exists  `employees` ; 
-drop table if exists  `salaries` ; 
-
-CREATE TABLE `employees` (
-`emp_no` int(11) NOT NULL,
-`birth_date` date NOT NULL,
-`first_name` varchar(14) NOT NULL,
-`last_name` varchar(16) NOT NULL,
-`gender` char(1) NOT NULL,
-`hire_date` date NOT NULL,
-PRIMARY KEY (`emp_no`));
-
-CREATE TABLE `salaries` (
-`emp_no` int(11) NOT NULL,
-`salary` int(11) NOT NULL,
-`from_date` date NOT NULL,
-`to_date` date NOT NULL,
-PRIMARY KEY (`emp_no`,`from_date`));
-
-INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
-INSERT INTO employees VALUES(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
-INSERT INTO employees VALUES(10003,'1959-12-03','Parto','Bamford','M','1986-08-28');
-INSERT INTO employees VALUES(10004,'1954-05-01','Chirstian','Koblick','M','1986-12-01');
-
-INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01');
-INSERT INTO salaries VALUES(10002,72527,'2001-08-02','9999-01-01');
-INSERT INTO salaries VALUES(10003,43311,'2001-12-01','9999-01-01');
-INSERT INTO salaries VALUES(10004,74057,'2001-11-27','9999-01-01');
-```
-- 题解1：
-```MySQL
-select s.emp_no, s.salary, e.last_name, e.first_name
-from salaries s join employees e
-on s.emp_no = e.emp_no
-where s.salary =
-    (select s1.salary
-    from salaries s1 join salaries s2 -- 自链，一对一拼接自身表格
-    on s1.salary <= s2.salary --  s1.salary 中每一职工对应多个 s2.salary 中 s1 >= s1 的薪水项·· 
-    group by s1.salary 
-    having count(distinct s2.salary) = 2); -- 去除s2中重复的salary
-``` 
-> 自链salary，一对一拼接自身表格
-```
-s1 	s2
-100     100
-98 	98
-98 	98
-95 	95
-```
-> s1.salary 中每一职工对应多个 s2.salary 中 s1 >= s1 的薪水项
-
-```
-s1 	 s2
-100      100
-98       100
-	  98
-	  98
-95 	 100
-	  98
-	  98
-	  95
-```
-
-- 题解2：
-```MySQL
-select e.emp_no, s.salary, e.last_name, e.first_name
-from employees e
-left join salaries s
-on e.emp_no = s.emp_no
-where s.salary = (
-    select max(salary) from salaries where
-    salary > (select max(salary) from salaries));
-```
-
 
 ### SQL21
 ```MySQL
@@ -638,7 +559,7 @@ group by de.dept_no
 order by de.dept_no;
 ```
 
-### SQL23
+### SQL23 窗口函数
 ```MySQL
 drop table if exists  `salaries` ; 
 
@@ -659,7 +580,7 @@ INSERT INTO salaries VALUES(10004,72527,'2001-12-01','9999-01-01');
 ```
 - Solution
   - MySQL四大排名函数 row_number、rank、dense_rank、ntile
-  - reference: https://blog.csdn.net/niuchenliang524/article/details/107690207
+  - reference: https://zhuanlan.zhihu.com/p/92654574
 ```MySQL
 select emp_no, salary,
 
@@ -706,7 +627,7 @@ GROUP BY s2.emp_no
 ```
 ### SQL71 按日期统计同一用户累计刷题数
 - 窗口函数解法
-- 笛卡儿积筛法（refer to above SQL23)
+- 笛卡儿积筛法（refer to above SQL18-SOL23)
   - t1.user_id = t2.user_id 同一用户
   - and t1.date >= t2.date 截至当前某用户累计天数
 ```MySQL 8.0
@@ -784,6 +705,86 @@ order by tmp.date, user.name;
 # where pn1.user_id = pn2.user_id and pn1.date>=pn2.date 
 # group by pn1.user_id,pn1.date;
 ```
+
+### SOL18
+- 请你查找薪水排名第二多的员工编号emp_no、薪水salary、last_name以及first_name，不能使用order by完成
+  - order by 排序实现方法之一
+  - 题目
+```MySQL
+drop table if exists  `employees` ; 
+drop table if exists  `salaries` ; 
+
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+
+INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
+INSERT INTO employees VALUES(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
+INSERT INTO employees VALUES(10003,'1959-12-03','Parto','Bamford','M','1986-08-28');
+INSERT INTO employees VALUES(10004,'1954-05-01','Chirstian','Koblick','M','1986-12-01');
+
+INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01');
+INSERT INTO salaries VALUES(10002,72527,'2001-08-02','9999-01-01');
+INSERT INTO salaries VALUES(10003,43311,'2001-12-01','9999-01-01');
+INSERT INTO salaries VALUES(10004,74057,'2001-11-27','9999-01-01');
+```
+- 题解1：
+```MySQL
+select s.emp_no, s.salary, e.last_name, e.first_name
+from salaries s join employees e
+on s.emp_no = e.emp_no
+where s.salary =
+    (select s1.salary
+    from salaries s1 join salaries s2 -- 自链，一对一拼接自身表格
+    on s1.salary <= s2.salary --  s1.salary 中每一职工对应多个 s2.salary 中 s1 >= s1 的薪水项·· 
+    group by s1.salary 
+    having count(distinct s2.salary) = 2); -- 去除s2中重复的salary
+``` 
+> 自链salary，一对一拼接自身表格
+```
+s1 	s2
+100     100
+98 	98
+98 	98
+95 	95
+```
+> s1.salary 中每一职工对应多个 s2.salary 中 s1 >= s1 的薪水项
+
+```
+s1 	 s2
+100      100
+98       100
+	  98
+	  98
+95 	 100
+	  98
+	  98
+	  95
+```
+
+- 题解2：
+```MySQL
+select e.emp_no, s.salary, e.last_name, e.first_name
+from employees e
+left join salaries s
+on e.emp_no = s.emp_no
+where s.salary = (
+    select max(salary) from salaries where
+    salary > (select max(salary) from salaries));
+```
+
 
 ### SQL61 窗口函数
 ```MySQl

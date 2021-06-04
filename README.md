@@ -1,6 +1,7 @@
 # SQLexcises
 
-> https://www.nowcoder.com/activity/oj 
+> https://www.nowcoder.com/activity/oj  牛客SQL<br>
+> https://blog.csdn.net/zzzgd_666/article/details/80594087 时间相关<br>
 
 ### SQL10
 ```MySQL

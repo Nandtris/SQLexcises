@@ -111,9 +111,9 @@ DISTINCT用来删除重复行，只保留唯一的。
 
  
 
-### SQL25 
-考点同24，10，更复杂
-```MySQL
+### SQL25 四连表-员工经理薪水比较
+
+```MySQL 8.0
 drop table if exists  `dept_emp` ; 
 drop table if exists  `dept_manager` ; 
 drop table if exists  `salaries` ; 
@@ -174,12 +174,14 @@ INSERT INTO salaries VALUES(10009,95409,'2002-02-14','9999-01-01');
 INSERT INTO salaries VALUES(10010,94409,'2001-11-23','9999-01-01');
 INSERT INTO salaries VALUES(10011,25828,'1990-01-22','9999-01-01');
 ```
+
 - Solution
-```MySQL
+- 四连表-筛选员工薪水 > 经理薪水
+```MySQL 8.0
 select de.emp_no, dm.emp_no as manager_no,
 sa.salary emp_salary, sa2.salary manager_salary
 from dept_emp de
-left join dept_manager dm on de.dept_no = dm.dept_no -- where 
+left join dept_manager dm on de.dept_no = dm.dept_no -- refer to where 
 left join salaries sa on de.emp_no = sa.emp_no -- emp_salary
 left join salaries sa2 on dm.emp_no = sa2.emp_no -- manager_sa
 where de.emp_no != dm.emp_no -- 筛出经理-经理行，形成职工-经理行
@@ -189,8 +191,10 @@ and sa2.to_date = '9999-01-01';
 ```
 
 
-### SQL21
-```MySQL
+
+
+### SQL21 select子查询-动态查询
+```MySQL 8.0
 drop table if exists  `employees` ; 
 drop table if exists  `salaries` ;
 
@@ -212,7 +216,9 @@ CREATE TABLE `salaries` (
 `to_date` date NOT NULL,
 PRIMARY KEY (`emp_no`,`from_date`));
 
--- 请你查找所有员工自入职以来的薪水涨幅情况，给出员工编号emp_no以及其对应的薪水涨幅growth，并按照growth进行升序
+-- 请你查找所有员工自入职以来的薪水涨幅情况，
+-- 给出员工编号emp_no以及其对应的薪水涨幅growth，
+-- 并按照growth进行升序
 -- 注:可能有employees表和salaries表里存在记录的员工，有对应的员工编号和涨薪记录，但是已经离职了，
 -- 离职的员工salaries表的最新的to_date!='9999-01-01'，这样的数据不显示在查找结果里面
 INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
@@ -321,18 +327,22 @@ INSERT INTO salaries VALUES(10002,72527,'1985-11-21','1996-08-03');
 INSERT INTO salaries VALUES(10003,15828,'1986-08-28','1995-12-03');
 INSERT INTO salaries VALUES(10008,25828,'1994-09-15','1998-03-11');
 ```
-- 题解如下：
+
+- Solution
+- select subquery 与动态查询
+- 作为大表 select 中的临时表，可以用大表 e, s 有关元素与本表 sa 元素关联，甚至做加减法
+
 ```MySQL
-select e.emp_no,
-(select s.salary-sa.salary from salaries sa
+select 
+    e.emp_no,
+    (select s.salary-sa.salary from salaries sa
     where sa.emp_no = e.emp_no and sa.from_date = e.hire_date
-) as growth -- 作为大表 select 中的临时表，可以用大表 e, s 有关元素与本表 sa 元素关联，甚至做加减法
-from employees e left join salaries s
+    ) as growth -- 作为大表 select 中的临时表，可以用大表 e, s 有关元素与本表 sa 元素关联，甚至做加减法
+from employees e left join salaries s -- 大表
 on e.emp_no = s.emp_no
 where to_date = '9999-01-01'
 order by growth;
-```
-
+```  
 
 ### SQL22
 ```MySQL

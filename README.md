@@ -344,7 +344,7 @@ where to_date = '9999-01-01'
 order by growth;
 ```  
 
-### SQL22
+### SQL22 动态查询参考2
 ```MySQL
 
 drop table if exists  `departments` ; 
@@ -373,7 +373,7 @@ CREATE TABLE `salaries` (
 `to_date` date NOT NULL,
 PRIMARY KEY (`emp_no`,`from_date`));
 
---请你统计各个部门的工资记录数，给出部门编码dept_no、部门名称dept_name <br>
+--请你统计各个部门的工资记录数，给出部门编码dept_no、部门名称dept_name
 --以及部门在salaries表里面有多少条记录sum，按照dept_no升序排序
 INSERT INTO departments VALUES('d001','Marketing');
 INSERT INTO departments VALUES('d002','Finance');
@@ -514,7 +514,7 @@ INSERT INTO salaries VALUES(10011,25828,'1990-01-22','9999-01-01');
 ```
 - Solution
 ```MySQL
--- way1 select 中设置子查询
+-- select 中设置子查询 动态查询
 select de.dept_no, 
 (select dept_name from departments where dept_no=de.dept_no) dept_name,
 count(*)
@@ -522,21 +522,6 @@ from dept_emp de
 
 left join salaries sa
 on de.emp_no = sa.emp_no
-group by de.dept_no
-order by de.dept_no;
-
--- way2 left join 三连,注意分组、排序条件放最后
-select de.dept_no,
-d.dept_name,
-count(*)
-from dept_emp de
-  
-left join salaries sa
-on de.emp_no = sa.emp_no
- 
-left join departments d
-on d.dept_no = de.dept_no
- 
 group by de.dept_no
 order by de.dept_no;
 ```

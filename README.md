@@ -1,3 +1,4 @@
+
 # SQLexcises
 
 > https://www.nowcoder.com/activity/oj  牛客SQL<br>
@@ -1603,3 +1604,36 @@ SELECT [DISTINCT|DISINCTROW|ALL] select_expression,... -- 查询结果
 ]
 -- 原文链接：https://blog.csdn.net/bestforxu/article/details/51131234
 ```
+
+
+
+# MySQL Review
+```MySQL
+SHOW DATABASES;
+USE mysql;
+SHOW TABLES;
+SHOW COLUMNS FROM mysql_tb1;
+
+-- login
+mysql -hlocaolhost -uroot -p
+exit
+
+CREATE DATABASENAME;
+```
+
+### 事务控制语句
+- SQL中使用`Innodb`数据库引擎的库或表才支持事务
+- 事务处理可以维护数据库的完整性，保证成批的SQL语句要么全部执行，要么全不执行
+- 事务用来管理 `insert, update, delete` 语句
+默认情况下，MySQL命令行事务都是自动提交的，即执行完 SQL 语句后马上执行 `COMMIT`操作。
+- 显式地开启事务: `BEGAIN' or `START TRANSACTION`
+- 禁止当前会话自动提交: `SET AUTOCOMMIT=0`
+- 提交事务，使数据库的修改成为永久性: `COMMIT`
+- 结束事务，并撤销正在进行的所有未提交修改: `ROLLBACK`
+- 事务的隔离级别:
+  - `READ UNCOMMITTED\READ COMMITTED\REPEATABLE READ\SERIALIZABLE`
+  - `set session/global transaction isolation level READ UNCOMMITTED`
+
+
+
+

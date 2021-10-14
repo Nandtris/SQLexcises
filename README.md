@@ -3,6 +3,7 @@
 
 > https://www.nowcoder.com/activity/oj  牛客SQL<br>
 > https://blog.csdn.net/zzzgd_666/article/details/80594087 时间相关<br>
+> https://www.bilibili.com/video/BV1fx411Z7CV oldboy<br>
 
 ## Review 1
 
@@ -1598,15 +1599,15 @@ date between '2025-01-01' and '2025-12-31';
 > https://www.bilibili.com/video/BV1fx411Z7CV <br>
 
 ### 3
-select student_id, avg(number) from score group by student_id having avg(number) > 60;
+`select student_id, avg(number) from score group by student_id having avg(number) > 60;`
 ### 5
-select count(tname) from teacher where tname like '李%';
+`select count(tname) from teacher where tname like '李%';`
 ### 6
-select sid, sname from student where sid not in (select student_id from score where corse_id in (select cid from teacher left join course on teacher.tid = course.teacher_id where tname = '波多'));
+`select sid, sname from student where sid not in (select student_id from score where corse_id in (select cid from teacher left join course on teacher.tid = course.teacher_id where tname = '波多'));`
 ### 8
-select student.sid, sname from student where student.sid in (select student_id from score where corse_id in (select cid from teacher left join course on tid = course.teacher_id where tname = '波多'));
+`select student.sid, sname from student where student.sid in (select student_id from score where corse_id in (select cid from teacher left join course on tid = course.teacher_id where tname = '波多'));`
 ### 4
-select student.sid, sname, count(corse_id), sum(number) from student left join score on student.sid = score.student_id group by student_id;
+`select student.sid, sname, count(corse_id), sum(number) from student left join score on student.sid = score.student_id group by student_id;`
 
 ### 7 学过课程001且也学过002课程的同学学号、姓名
 -- 且条件不能用 and ，可用 or 筛选
@@ -1638,13 +1639,13 @@ select s1_id from
     on s1_id = s2_id where n1 > n2;
 ```
 
-## 10 查询有课程成绩小于60分的同学学号、姓名
+### 10 查询有课程成绩小于60分的同学学号、姓名
 ```MySql
 select sid, sname from student where sid in(
     select student_id from score where number < 60 group by student_id);
 ```
 
-## 11 查询没有学全所有课程的同学学号、姓名
+### 11 查询没有学全所有课程的同学学号、姓名
 ```MySql
 -- 如果学生一门课都没选呢？ 用or筛选
 -- count(1) or count(primary key) 效率高 (p32 练习讲解4)
@@ -1654,9 +1655,9 @@ select sid, sname from student where sid
     or sid not in (select student_id from score);
 ```
 
-## 12 查询至少有一门课与学号为001的同学所学相同的同学的学号、姓名
-## 14 查询和 002 号同学学习的课程完全相同的同学学号、姓名
-## 13 查询至少学过学号为 001 同学所选课程中任意一门课的其他同学学号、姓名
+### 12 查询至少有一门课与学号为001的同学所学相同的同学的学号、姓名
+### 14 查询和 002 号同学学习的课程完全相同的同学学号、姓名
+### 13 查询至少学过学号为 001 同学所选课程中任意一门课的其他同学学号、姓名
 ```MySql
 -- 不会 
 --12
@@ -1680,7 +1681,7 @@ select course_id from score where student_id = 1
 
 ```
 
-## 15 删除学过 小叶 老师score表纪录
+### 15 删除学过 小叶 老师score表纪录
 ```MySql
 delete from score where course_id in(
 select cid from course where teacher_id in(
@@ -1688,7 +1689,7 @@ select tid from teacher where tname = '小叶'
 ));
 ```
 
-## 16 向sc表中插入一些记录，这些记录符合以下条件：没有上过 002 课程的同学学号；插入 002 号课程的平均成绩
+### 16 向sc表中插入一些记录，这些记录符合以下条件：没有上过 002 课程的同学学号；插入 002 号课程的平均成绩
 ```MySql
 -- 插入值：insert into table_name(c1, c2, c3) values(v1, v2, v3);
 -- 赋值表：insert into table_name(column_list) select column_list from table_name;
@@ -1700,7 +1701,7 @@ select student_id from score where course_id = 2
 );
 ```
 
-## 17 按平均成绩从低到高显示所有学生的 语文、数学、英语课的成绩，形式：学生ID，语数英，有效课程数，有效平均分
+### 17 按平均成绩从低到高显示所有学生的 语文、数学、英语课的成绩，形式：学生ID，语数英，有效课程数，有效平均分
 ```MySql
 -- 有效指的是 语数英三门课，所以筛选需要限定的这三门课里: count(), avg()---where 语句限定
 -- where 在 group by 后则 error：course_id 找不到 
@@ -1724,9 +1725,9 @@ order by
     '有效平均分';
 ```
 
-## 19 各科按平均成绩从低到高 和 及格率从高到低排序
-## 35 查询每门课程成绩最好的前2名(小于第三的即为前2名 同19)
-## 21 查询各科成绩前3名的纪录（考虑并列）--p36 excises8(like 35)
+### 19 各科按平均成绩从低到高 和 及格率从高到低排序
+### 35 查询每门课程成绩最好的前2名(小于第三的即为前2名 同19)
+### 21 查询各科成绩前3名的纪录（考虑并列）--p36 excises8(like 35)
 ```MySql
 --21
 select student_id, course_id, number
@@ -1782,7 +1783,7 @@ order by
     avgsco asc, passrate desc;
 ```
 
-## 20 课程平均分从高到低表示，显示任课老师
+### 20 课程平均分从高到低表示，显示任课老师
 ```MySql
 -- IF(ISNULL(X),expr1,expr2)
 select
@@ -1801,16 +1802,16 @@ order by
     avgsco desc;
 ```
 
-## 25 查询小姓学生名单
+### 25 查询小姓学生名单
 ```MySql
 select sid, sname from student where sname like '小%';
 ```
-## 26 查询同名同姓学生名单，并且统计人数
+### 26 查询同名同姓学生名单，并且统计人数
 ```MySql
 select sname, count(1) from student group by sname having count(1)>0;
 ```
 
-## 28 查询平均成绩大于85的所有学生姓名、学号和平均成绩
+### 28 查询平均成绩大于85的所有学生姓名、学号和平均成绩
 ```MySql
 -- avg(number) 要有别名，否则第一个 select 语句 error
 -- Every derived table must have its own alias
@@ -1821,14 +1822,14 @@ select student_id,sname, s1.average from(
 ) s1 left join student on student_id = sid;
 ```
 
-## 31 查询选了课程的人数
+### 31 查询选了课程的人数
 ```MySql
 select count(s1.student_id) from(
 select student_id from score group by student_id
 ) s1;
 ```
 
-## 32 查询选修"苍空"老师所授课程的学生中，成绩最高的学生
+### 32 查询选修"苍空"老师所授课程的学生中，成绩最高的学生
 ```MySql
 select * from (
     select *, dense_rank() over(order by number desc) crank from teacher 
@@ -1837,7 +1838,7 @@ select * from (
 ) A where a.crank = 1;
 ```
 
-## 33 查询各个课程及其选修人数
+### 33 查询各个课程及其选修人数
 ```MySql
 -- 不能 count(1),否则计数没有人选修的课程为1
 select cid, cname, count(student_id) from course
@@ -1845,7 +1846,7 @@ left join score on cid = course_id
 group by cid;
 ```
 
-## 34 查询不同课程但成绩相同的学生的学号、课程号、学生成绩
+### 34 查询不同课程但成绩相同的学生的学号、课程号、学生成绩
 ```MySql
 select s1.student_id, s1.course_id, number
 from score s1, score s2
@@ -1855,7 +1856,7 @@ where
     s1.number = s2.number;
 ```
 
-## 36 检索至少选修两门课的学生学号
+### 36 检索至少选修两门课的学生学号
 ```MySql
 select student_id from score
 group by student_id 
@@ -1864,7 +1865,7 @@ having count(course_id) > 1;
 --39 查询两门以上不及格课程的童鞋及其平均成绩
 ```
 
-## P44_below: SQL refer to pymysql view 触发器 函数 存储过程……
+### P44_below: SQL refer to pymysql view 触发器 函数 存储过程……
 ```python
 -- pymysql
 pip3 install pymysql # -i 国内源
@@ -1887,7 +1888,7 @@ if ret: print('成', ret)
 else: print('败')
 ```
 
-## p49 Function
+### p49 Function
 ```MySql
 --build in F
 date_format('2021-10-12 11:11', '%y-%m')
@@ -1910,7 +1911,7 @@ delimiter;
 select f(1, 100);
 ```
 
-## p47 view
+### p47 view
 ```MySql
 create view v5 as select * from where number > 60;
 select * from v5;

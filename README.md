@@ -1,48 +1,5 @@
 
-## SQL关键字顺序
-```MySQL 8.0
-SELECT [DISTINCT|DISINCTROW|ALL] select_expression,... -- 查询结果
-[FROM table_references -- 指定查询的表
-[WHERE where_definition] -- where子句，查询数据的过滤条件
-[GROUP BY col_name,...] -- 对[匹配where子句的]查询结果进行分组
-[HAVING where_definition] -- 对分组后的结果进行条件限制
-[ORDER BY{unsigned_integer | col_name | formula} [ASC | DESC],...] -- 对查询结果进行排序
-[LIMIT [offset,] rows] -- 对查询的显示结果进行条数限制
-[PROCEDURE procedure_name] --查询存储过程返回的结果集数据
-]
--- 原文链接：https://blog.csdn.net/bestforxu/article/details/51131234
-```
-
-
-## MySQL
-```MySQL
-SHOW DATABASES;
-USE mysql;
-SHOW TABLES;
-SHOW COLUMNS FROM mysql_tb1;
-
--- login
-mysql -hlocaolhost -uroot -p
-exit
-CREATE DATABASENAME;
-```
-
-## 事务控制语句
-- SQL中使用`Innodb`数据库引擎的库或表才支持事务
-- 事务处理可以维护数据库的完整性，保证成批的SQL语句要么全部执行，要么全不执行
-- 事务用来管理 `insert, update, delete` 语句
-默认情况下，MySQL命令行事务都是自动提交的，即执行完 SQL 语句后马上执行 `COMMIT`操作。
-- 显式地开启事务: `BEGAIN' or `START TRANSACTION`
-- 禁止当前会话自动提交: `SET AUTOCOMMIT=0`
-- 提交事务，使数据库的修改成为永久性: `COMMIT`
-- 结束事务，并撤销正在进行的所有未提交修改: `ROLLBACK`
-- 事务的隔离级别:
-  - `READ UNCOMMITTED\READ COMMITTED\REPEATABLE READ\SERIALIZABLE`
-  - `set session/global transaction isolation level READ UNCOMMITTED`
-
-
-
-# SQLexcises
+# SQLexcises(牛客+oldboy)
 
 > https://www.nowcoder.com/activity/oj  牛客SQL<br>
 > https://blog.csdn.net/zzzgd_666/article/details/80594087 时间相关<br>
@@ -1635,7 +1592,8 @@ date between '2025-01-01' and '2025-12-31';
 `UPDATE table SET date = DATE_ADD(date, INTERVAL 1 YEAR/month/day)`
 
 
-## Review 2
+## Review 2 OldBoy
+
 > 可能是全网最好的MySQL入门合集 <br>
 > https://www.bilibili.com/video/BV1fx411Z7CV <br>
 
@@ -1696,9 +1654,10 @@ select sid, sname from student where sid
     or sid not in (select student_id from score);
 ```
 
---12 查询至少有一门课与学号为001的同学所学相同的同学的学号、姓名
---14 查询和 002 号同学学习的课程完全相同的同学学号、姓名
---13 查询至少学过学号为 001 同学所选课程中任意一门课的其他同学学号、姓名
+## 12 查询至少有一门课与学号为001的同学所学相同的同学的学号、姓名
+## 14 查询和 002 号同学学习的课程完全相同的同学学号、姓名
+## 13 查询至少学过学号为 001 同学所选课程中任意一门课的其他同学学号、姓名
+```MySql
 -- 不会 
 --12
 select sid, sname from student where sid in
@@ -1719,14 +1678,18 @@ select student_id from score where course_id in(
 select course_id from score where student_id = 1
 )and student_id !=1);
 
---15 删除学过 小叶 老师score表纪录
+```
+
+## 15 删除学过 小叶 老师score表纪录
+```MySql
 delete from score where course_id in(
 select cid from course where teacher_id in(
 select tid from teacher where tname = '小叶'
 ));
+```
 
-
---16 向sc表中插入一些记录，这些记录符合以下条件：没有上过 002 课程的同学学号；插入 002 号课程的平均成绩
+## 16 向sc表中插入一些记录，这些记录符合以下条件：没有上过 002 课程的同学学号；插入 002 号课程的平均成绩
+```MySql
 -- 插入值：insert into table_name(c1, c2, c3) values(v1, v2, v3);
 -- 赋值表：insert into table_name(column_list) select column_list from table_name;
 insert into score(student_id, course_id, number)
@@ -1735,9 +1698,10 @@ select avg(number) from score where course_id = 2
 ) as avgcor from student where sid not in(
 select student_id from score where course_id = 2
 );
+```
 
-
---17 按平均成绩从低到高显示所有学生的 语文、数学、英语课的成绩，形式：学生ID，语数英，有效课程数，有效平均分
+## 17 按平均成绩从低到高显示所有学生的 语文、数学、英语课的成绩，形式：学生ID，语数英，有效课程数，有效平均分
+```MySql
 -- 有效指的是 语数英三门课，所以筛选需要限定的这三门课里: count(), avg()---where 语句限定
 -- where 在 group by 后则 error：course_id 找不到 
 select
@@ -1758,11 +1722,12 @@ group by
     student_id
 order by
     '有效平均分';
+```
 
-
---19 各科按平均成绩从低到高 和 及格率从高到低排序
---35 查询每门课程成绩最好的前2名(小于第三的即为前2名 同19)
---21 查询各科成绩前3名的纪录（考虑并列）--p36 excises8(like 35)
+## 19 各科按平均成绩从低到高 和 及格率从高到低排序
+## 35 查询每门课程成绩最好的前2名(小于第三的即为前2名 同19)
+## 21 查询各科成绩前3名的纪录（考虑并列）--p36 excises8(like 35)
+```MySql
 --21
 select student_id, course_id, number
 from(
@@ -1772,6 +1737,7 @@ from(
 ) s3 
 where number > if(isnull(s3.forth), 0, s3.forth)
 order by course_id, number desc;
+
 
 --35
 ---version 1 ERROR 1054 (42S22): Unknown column 'third' in 'where clause'
@@ -1801,6 +1767,7 @@ where
 order by
     course_id, number desc;
 
+
 -- 19
 -- case when then else
 select
@@ -1813,9 +1780,10 @@ group by
     course_id
 order by
     avgsco asc, passrate desc;
+```
 
-
---20 课程平均分从高到低表示，显示任课老师
+## 20 课程平均分从高到低表示，显示任课老师
+```MySql
 -- IF(ISNULL(X),expr1,expr2)
 select
     course_id,
@@ -1831,15 +1799,19 @@ group by
     course_id
 order by
     avgsco desc;
+```
 
-
---25 查询小姓学生名单
+## 25 查询小姓学生名单
+```MySql
 select sid, sname from student where sname like '小%';
---26 查询同名同姓学生名单，并且统计人数
+```
+## 26 查询同名同姓学生名单，并且统计人数
+```MySql
 select sname, count(1) from student group by sname having count(1)>0;
+```
 
-
---28 查询平均成绩大于85的所有学生姓名、学号和平均成绩
+## 28 查询平均成绩大于85的所有学生姓名、学号和平均成绩
+```MySql
 -- avg(number) 要有别名，否则第一个 select 语句 error
 -- Every derived table must have its own alias
 -- And 引用 内容需要用格式：derives_table_alias.内容别名 like s1.average
@@ -1847,47 +1819,55 @@ select student_id,sname, s1.average from(
     select student_id, avg(number) average from score group by student_id
     having avg(number) > 85
 ) s1 left join student on student_id = sid;
+```
 
-
---31 查询选了课程的人数
+## 31 查询选了课程的人数
+```MySql
 select count(s1.student_id) from(
 select student_id from score group by student_id
 ) s1;
+```
 
-
---32 查询选修"苍空"老师所授课程的学生中，成绩最高的学生
+## 32 查询选修"苍空"老师所授课程的学生中，成绩最高的学生
+```MySql
 select * from (
     select *, dense_rank() over(order by number desc) crank from teacher 
     left join course on tid = teacher_id 
     left join score on cid = course_id where tname = '苍空'
 ) A where a.crank = 1;
+```
 
---33 查询各个课程及其选修人数
+## 33 查询各个课程及其选修人数
+```MySql
 -- 不能 count(1),否则计数没有人选修的课程为1
 select cid, cname, count(student_id) from course
 left join score on cid = course_id
 group by cid;
+```
 
-
---34 查询不同课程但成绩相同的学生的学号、课程号、学生成绩
+## 34 查询不同课程但成绩相同的学生的学号、课程号、学生成绩
+```MySql
 select s1.student_id, s1.course_id, number
 from score s1, score s2
 where
     s1.student_id != s2.student_id and
     s1.course_id != s2.course_id and
     s1.number = s2.number;
+```
 
---36 检索至少选修两门课的学生学号
+## 36 检索至少选修两门课的学生学号
+```MySql
 select student_id from score
 group by student_id 
 having count(course_id) > 1;
 --37 查询全部学生都选修的课程课程号和课程名
 --39 查询两门以上不及格课程的童鞋及其平均成绩
+```
 
-
--- P44_below: SQL refer to pymysql view 触发器 函数 存储过程……
+## P44_below: SQL refer to pymysql view 触发器 函数 存储过程……
+```python
 -- pymysql
-pip3 install pymysql -i 国内源
+pip3 install pymysql # -i 国内源
 
 import pymysql
 course_id = input('courseId: ')
@@ -1905,9 +1885,10 @@ conn.close()
 
 if ret: print('成', ret)
 else: print('败')
+```
 
-
---p49 Function
+## p49 Function
+```MySql
 --build in F
 date_format('2021-10-12 11:11', '%y-%m')
 select sum(x, y); -- 执行函数
@@ -1927,11 +1908,12 @@ END \\
 delimiter;
 
 select f(1, 100);
+```
 
-
---p47 view
+## p47 view
+```MySql
 create view v5 as select * from where number > 60;
 select * from v5;
-
+```
 
 

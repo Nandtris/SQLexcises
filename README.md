@@ -1917,4 +1917,37 @@ create view v5 as select * from where number > 60;
 select * from v5;
 ```
 
+### p51(50-53...) procedure + transaction
+- 检查插入值执行状态
+```MySql
+delimiter //
+create procedure p5(
+	out n int
+)
+BEGIN
+	declare exit handler for sqlexception
+	begin
+		--Error
+		set n = 1;
+		rollback;
+	end;
+	
+	declare exit handler for sqlwarning
+	begin
+		set n = 2;
+		rollback;
+	end;
+	
+	start transaction;
+		delete from score where id = 1;
+		insert into score(sid) values(5);
+	commit;
+	
+	--success
+	set n = 0;
+END \\
+delimiter ;
+
+	
+    
 

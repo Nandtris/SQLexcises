@@ -1918,10 +1918,14 @@ select * from v5;
 ```
 
 ### p51(50-53...) procedure + transaction
-- 检查插入值执行状态
+- 检查插入值执行状态 
+  - sucess 0
+  - error 1
+  - warning 2
+  
 ```MySql
 delimiter //
-create procedure p5(
+create procedure p6(
 	out n int
 )
 BEGIN
@@ -1940,7 +1944,7 @@ BEGIN
 	
 	start transaction;
 		delete from score where id = 1;
-		insert into student(sname) values('大头');
+		insert into student(sname, gender, class_id) values('大头', '男', 2);
 	commit;
 	
 	--success
@@ -1948,6 +1952,126 @@ BEGIN
 END //
 delimiter ;
 
-	
+--out 位置需要传入一个变量
+--@a session 级变量
+set @a = 9;
+call p6(@a);
+select @a;
+
+-- another way
+set @_p6_0 = 9;
+call p6(@_p6_0);
+select @_p6_0;
+```
+```python3
+-- pymysql 执行上面语句
+import pymysql
+course_id = input('courseId: ')
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='542643364',
+                       database='db2')
+cursor = conn.cursor()
+
+cursor.callproc('p6', (90,))
+# conn.commit()
+cursor.execute('select @_p6_0')
+ret = cursor.fetchall()
+print(ret)
+
+# conn.commit()
+cursor.close()
+conn.close()
+
+# if ret: print('成', ret)
+# else: print('败')
+
+```
+
+- **Python 执行 mysql 存储过程** <br>
+- refer to https://www.cnblogs.com/klvchen/p/10119006.html <br>
+
+> 1 创建临时表
+```MySql
+create database test;
+use test;
+
+DROP TABLE IF EXISTS `tmp`;
+CREATE TABLE `tmp`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+INSERT INTO `tmp` VALUES (1, 'klvchen');
+INSERT INTO `tmp` VALUES (2, 'lily');
+INSERT INTO `tmp` VALUES (3, 'lucy');
+INSERT INTO `tmp` VALUES (4, 'james');
+INSERT INTO `tmp` VALUES (5, 'jim');
+```
+
+> 2 创建 存储过程
+```MySql
+delimiter $$        # 自定义 mysql 的分隔符
+CREATE  PROCEDURE p1(
+    in i1 int,      # 仅用于传入参数用
+    in i2 int,
+    inout i3 int,   # 既可以传入又可以当作返回值
+    out r1 int      # 仅用于返回值用，外部传进来的值无用
+)
+BEGIN
+    DECLARE temp1 int;
+    DECLARE temp2 int default 0;
+    
+    set temp1 = 1;
+
+    set r1 = i1 + i2 + temp1 + temp2;
+    
+    set i3 = i3 + 100;
+		
+		SELECT * FROM tmp;
+
+end $$
+delimiter ;
+```
+
+> 3 调用 pymql
+```
+import pymysql
+
+PY_MYSQL_CONN_DICT = {
+    "host" : '192.168.0.214',
+    "port" : 3306,
+    "user" : 'root',
+    "passwd" : '123456',
+    "db" : 'tmpdb'
+}
+
+conn = pymysql.connect(**PY_MYSQL_CONN_DICT)
+cusor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+# 调用 p1 存储过程，传入4个参数
+cusor.callproc('p1', args=(1, 2, 3, 4))
+
+# 返回获得的集合，即存储函数中的 SELECT * FROM tmp; 结果
+res1 = cusor.fetchall()
+print(res1)
+
+# 以 python 固定格式获取返回的值：@_存储过程名_0, 第一个返回值
+cusor.execute("select @_p1_0, @_p1_1, @_p1_2, @_p1_3")
+res2 = cusor.fetchall()
+print(res2)
+
+conn.commit()
+cusor.close()
+conn.close()
+```
+
+- 'mysql> drop procedure p6;'
+- 参数
+  - IN 输入参数：表示调用者向过程传入值（传入值可以是字面量或变量）
+  - OUT 输出参数：表示过程向调用者传出值(可以返回多个值)（传出值只能是变量）
+  - INOUT 输入输出参数：既表示调用者向过程传入值，又表示过程向调用者传出值（值只能是变量）
+
     
 

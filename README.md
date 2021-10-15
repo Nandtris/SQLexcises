@@ -1940,12 +1940,12 @@ BEGIN
 	
 	start transaction;
 		delete from score where id = 1;
-		insert into score(sid) values(5);
+		insert into student(sname) values('大头');
 	commit;
 	
 	--success
 	set n = 0;
-END \\
+END //
 delimiter ;
 
 	

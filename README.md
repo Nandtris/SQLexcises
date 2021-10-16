@@ -1918,7 +1918,7 @@ select * from v5;
 ```
 
 ### p51(50-53...) procedure + transaction
-- 检查插入值执行状态 
+#### 1 检查插入值执行状态 
   - sucess 0
   - error 1
   - warning 2
@@ -1987,9 +1987,50 @@ conn.close()
 # else: print('败')
 
 ```
+#### 2 存储过程+动态SQL+防注入
+```MySql
+delimiter //
+create procedure p3(
+    in tpl varchar(255),
+    in args int
+)
+BEGIN
+    set @a = args;
+    set @t = tpl;
+    prepare xxoo from @t; -- 用变量
+    execute xxoo using @a; -- 用变量
+    deallocate prepare xxoo;
+END //
+delimiter ;
 
-- **Python 执行 mysql 存储过程** <br>
-- refer to https://www.cnblogs.com/klvchen/p/10119006.html <br>
+call p3('select * from student where sid > ?', 2)
+```
+
+> pymysql 实现：
+```python3
+import pymysql
+course_id = input('courseId: ')
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='542643364',
+                       database='db2')
+cursor = conn.cursor()
+
+cursor.callproc('p3', ('select * from student where sid > ?', 2))
+ret = cursor.fetchall() # 查询用 fetchall()
+print(ret)
+
+# conn.commit() # 增删改data有变动需要 commit()
+cursor.close()
+conn.close()
+```
+
+#### 3 p52 cursor-LOOP
+
+
+
+> **Python 执行 mysql 存储过程** <br>
+> refer to https://www.cnblogs.com/klvchen/p/10119006.html <br>
 
 > 1 创建临时表
 ```MySql

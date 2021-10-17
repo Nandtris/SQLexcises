@@ -67,6 +67,7 @@
     - 查
       - 排序
       - 分组
+      `select count(id) from tablename group by name HAVING count(id)>10;`
       - 条件
       ```MySql
 	  
@@ -139,7 +140,7 @@
   - session
   ```MySql
   set session auto_increment=2; --以2为步长递增
-  alter table set auto_increment=10;
+  alter table set auto_increment=10; --???
   show create table class\G; --竖向显示表属性
   shoe session variable like '%auto_inc%'; --会话级别变量查看
   ```
@@ -148,7 +149,19 @@
   set global auto_increment=2;
   set global auto_increment_offset=10;--起始值
   ```
-  
+
+- 导入导出
+  - backup -> 数据表结构+数据
+  `mysqldump -uroot db1 > db1.sql -p`
+  - backup -> 仅数据结构
+  `mysqldump -uroot -d db1 > db1.sql -p`
+  - 导入
+  ```MySql
+  creat databae db5;
+  mysqldump -uroot -d db5 < db1.sql -p
+  ```
+
+
 # MySQLexcises(牛客+oldboy)
 
 > https://www.nowcoder.com/activity/oj  牛客SQL<br>

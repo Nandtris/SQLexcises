@@ -1,5 +1,55 @@
+# MySql_Key oldboy
 
-# SQLexcises(牛客+oldboy)
+- 数据库是什么
+- MySql安装
+- 用户授权
+- 数据库
+  - 数据库操作
+    - 
+  - 数据表操作
+    - 数据类型
+    - 是否可以为空
+    - 自增
+    - 主键
+    - 外键
+      - 一对一
+      - 多对多
+      - 一对多
+    - 唯一索引
+  - 数据行操作
+    - （增删改）查
+    - 排序
+    - 分组
+    - 条件
+    - 连表
+      - left/right/inner
+    - 临时表
+    - 通配符
+    - 分页: limit
+    - 组合：union
+- 视图（虚拟）
+- 触发器
+- 函数：`select f(x);`
+- 存储过程
+  - 游标
+  - 事务
+  - 结果集+返回值
+- pymysql
+  - 链接 connect()
+  - 操作（游标）
+    - 增删改 -> commit()
+    - 查询   -> fecthall()/fetchone
+    - SQL注入
+      - `select * from user where username='x' and pwd='asd'`
+      - `select * from user where username='x' or 1=1 -- ' and pwd='asd'`
+    - 调用存储过程
+      - `callproc('p1', (args1, args2, ...))`
+      - `select @_存储过程名称_0`
+    - 关闭游标
+    - 关闭连接
+
+
+# MySQLexcises(牛客+oldboy)
 
 > https://www.nowcoder.com/activity/oj  牛客SQL<br>
 > https://blog.csdn.net/zzzgd_666/article/details/80594087 时间相关<br>

@@ -5,7 +5,7 @@
 - 用户授权
 - 数据库
   - 数据库操作
-    - `show databases;'
+    - `show databases;`
     - `create database db2;`
     - `drop database db2;`
     - `use database db1;`
@@ -59,9 +59,7 @@
 	  drop table student;
 	  
 	  update userinfo set name='Alex', email='xx@oo.com' 
-	      where id>5 and name='xx';
-	  
-	  
+	      where id>5 and name='xx';  
 	  ```
   
     - 查
@@ -75,8 +73,7 @@
 	  		id in (1, 5, 11)
 			id in (select sid from student)
 			id not in(1, 5, 11)
-			id between 1 and 11
-			
+			id between 1 and 11			
 	  ```
       
       - 临时表

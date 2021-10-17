@@ -5,7 +5,10 @@
 - 用户授权
 - 数据库
   - 数据库操作
-    - sql
+    - `show databases;'
+    - `create database db2;`
+    - `drop database db2;`
+    - `use database db1;`
   - 数据表操作
     - 数据类型
     - 是否可以为空
@@ -16,17 +19,102 @@
       - 多对多
       - 一对多
     - 唯一索引
+    - `drop table userinfo;`
+    ```MySql
+    create table userinfo(
+    	id bigint not null auto_increment,
+		name varchar(99) not null,
+		gender int(2) not null,
+		email varchar(1000) not null,
+		primary key(id),
+		unique(name, email),
+		constraint fk_userinfo_gender (gender) references genderinfo(id)
+    )engine=innodb default charset=utf8;
+    
+    create table userinfoM select * from userinfo where gender='M';
+    
+    ALTER table userinfo ADD column birth varchar(10) not null;
+    alter table userinfo CHANGE column birth birthday varcahr(20) not null;
+    alter table userinfo DROP column birthday;
+    
+    -- ? bigint to timestamp
+    alter table age_of_barbarians MODIFY register_time timestamp(0);
+    alter table student ADD [UNIQUE]INDEX uni-name(name);
+    ```
   - 数据行操作
-    - （增删改）查
-    - 排序
-    - 分组
-    - 条件
-    - 连表
-      - left/right/inner
-    - 临时表
-    - 通配符
-    - 分页: limit
-    - 组合：union
+    - 增删改
+      ```MySql
+      insert into student(sname, gender, class_id) values('Alex', '男', 3);
+      insert into student(sname) select name from student2;
+	  -- 实用SQL语句（廖）
+	  insert into statistics(class_id, average)
+	      select calss_id, avg(score)
+		  from student group by class_id;
+	  
+	  --有自增则从删除后的序号后继续进行后面的插值
+      DELETE FROM table_name [WHERE Clause]
+	  --删除内容、释放空间但不删除定义, 自增咧初始值为1
+	  truncate table student;
+	  --删除内容和定义，释放空间;不能再次新增数据，除非新建一个表
+	  drop table student;
+	  
+	  update userinfo set name='Alex', email='xx@oo.com' 
+	      where id>5 and name='xx';
+	  
+	  
+	  ```
+  
+    - 查
+      - 排序
+      - 分组
+      - 条件
+      ```MySql
+	  
+	  where id !=1
+	  		id in (1, 5, 11)
+			id in (select sid from student)
+			id not in(1, 5, 11)
+			id between 1 and 11
+			
+	  ```
+      
+      - 临时表
+      ```MySql
+	  
+	  --动态查询
+	  select student_id,
+	  	(select number from score s2 where s1.student_id=s2.student_id and course_id=1) as 生物,
+		(select number from score s2 where s1.student_id=s2.student_id and course_id=2) as 体育,
+		count(number) cnum,
+		avg(number) avgnum
+	  from score s1 group by student_id;
+	  
+	  --case when 统计及格率
+	  select course_id, avg(number) avgnum,
+	  	sum(CASE WHEN number < 60 THEN 0 ELSE 1 END)/sum(1) passRate
+	  from score group by course_id
+	  order by avg(number) asc, passRate desc;
+	  
+	  --if(isnull(x), 0, 1)
+	  avg(if(isnull(score.number), 0, score.number))
+	  
+	  ```
+      - 通配符 `like 'a%'; like 'a_';`
+      - 分页: `limit 0, 10 == limit 10 offset 0` -- 0=起始值
+      - 上下组合：`union[all]`
+      - 笛卡尔集
+      ```MySql 8
+	  select * from score s1, score s2;
+	  ```
+	  - 连表 left/right/inner join
+	  ```MySql 8
+	  --5 tables join
+	  select * from score -- * EORRO 列名ID重复，可以`score.id`
+	  	left join student on score.student_id = student.sid
+		left join course on score.course_id = course.cid
+		left join class on student.class_id = class.cid
+		left join teacher on course.teacher_id = teacher.tid;
+	  ```
 - 视图（虚拟）
 - 触发器
 - 函数：`select f(x);`
@@ -47,8 +135,20 @@
       - `select @_存储过程名称_0`
     - 关闭游标
     - 关闭连接
-
-
+- p15 自增步长
+  - session
+  ```MySql
+  set session auto_increment=2; --以2为步长递增
+  alter table set auto_increment=10;
+  show create table class\G; --竖向显示表属性
+  shoe session variable like '%auto_inc%'; --会话级别变量查看
+  ```
+  - global
+  ```MySql 
+  set global auto_increment=2;
+  set global auto_increment_offset=10;--起始值
+  ```
+  
 # MySQLexcises(牛客+oldboy)
 
 > https://www.nowcoder.com/activity/oj  牛客SQL<br>

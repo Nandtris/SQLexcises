@@ -2268,7 +2268,7 @@ cusor.close()
 conn.close()
 ```
 
-- 'mysql> drop procedure p6;'
+- `mysql> drop procedure p6;`
 - 参数
   - IN 输入参数：表示调用者向过程传入值（传入值可以是字面量或变量）
   - OUT 输出参数：表示过程向调用者传出值(可以返回多个值)（传出值只能是变量）

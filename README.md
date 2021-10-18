@@ -2293,7 +2293,7 @@ conn.close()
   - 哈希
     - TableB_Columns--->HASH--->999--map--->Memery_Address
     -        C_Order----------->disorder
-    -单值查找快，范围查找慢
+    - 单值查找快，范围查找慢
   - btree-INNODB-二叉树
 - 创建
   - 创建额外的文件（某种格式储存）

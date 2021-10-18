@@ -2274,5 +2274,64 @@ conn.close()
   - OUT 输出参数：表示过程向调用者传出值(可以返回多个值)（传出值只能是变量）
   - INOUT 输入输出参数：既表示调用者向过程传入值，又表示过程向调用者传出值（值只能是变量）
 
-    
+### p58 索引 + ORM 框架
+### 索引
+- 作用：约束，加速查找
+- 索引
+  - 普通索引: 加速查找
+  - 主键索引：加速查找 + 不能为空 +　不能重复
+  - 唯一索引：加速查找 + 不能重复
+  - 联合索引（多列）
+    - 联合主键索引
+    - 联合唯一索引
+    - 联合普通索引
+- 加速查找
+  - 命中索引加速查找
+  - 插入、更新、删除值慢
+- 数据结构:
+  - 通过算法另建一个数据表，加速查找
+  - 哈希
+    - TableB_Columns--->HASH--->999--map--->Memery_Address
+    -        C_Order----------->disorder
+    -单值查找快，范围查找慢
+  - btree-INNODB-二叉树
+- 创建
+  - 创建额外的文件（某种格式储存）
+  ```MySql
+  -- 普通索引
+  create index xo on userinfo(email);
+  drop index xo on userinfo;
+  -- 唯一
+  create unique index xo on userinfo(email);
+  drop unique index xo on userinfo;
+  -- 组合索引
+  -- 最左匹配原则
+  create unique index xo on userinfo(email, gender);
+  drop unique index xo on userinfo;
+
+  select * from  userinfo where email='asd'; --YES
+  select * from  userinfo where email='asd' and gender='M'; --YES
+  select * from  userinfo where gender='M'; --NO
+  
+  --主键索引
+  alter table userinfo add primary key(id);
+  --如果主键自带 auto_increment 需要先删除该属性：
+  alter table userinfo modify id int;
+  altet table userinfo DROP primary key;
+
+  --覆盖索引：
+  create unique index xo on userinfo(email);
+  SELECT email from userinfo where email='asd@email';
+  --索引合并:效率低于组合索引
+  alter table userinfo add primary key(id);
+  create index xo on userinfo(email);
+  SELECT * from userinfo where id=3 and email='asd@email';
+  ```
+- 命中索引
+```MySql
+create index xo on userinfo(email);
+select * from userinfo where email like 'asd@email'; -- NO
+select * from userinfo where email= 'asd@email'; -- YES
+```
+#### SQLALCHEMY
 

@@ -2340,8 +2340,8 @@ select * from userinfo where email= 'asd@email'; -- YES
   - fuction
   - or
   - type
-  - !=
-  - >
+  - `!=`
+  - `>`
   - order by
   - 组合索引最左前缀
 - p62 注意事项

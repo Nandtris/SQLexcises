@@ -2333,5 +2333,48 @@ create index xo on userinfo(email);
 select * from userinfo where email like 'asd@email'; -- NO
 select * from userinfo where email= 'asd@email'; -- YES
 ```
-#### SQLALCHEMY
+- 频繁查找的列创建索引
+- p61 未命中索引
+  - `index: id(primary key) email(comman index)`
+  - like
+  - fuction
+  - or
+  - type
+  - !=
+  - >
+  - order by
+  - 组合索引最左前缀
+- p62 注意事项
+  - 避免使用 `select *`
+  - count(1)/(column) 代替 count(*)
+  - 尽量char 少量varchar
+  - 表的字段顺序:固定长度的字段优先
+  - 组合索引代替单个多列索引（经常使用多条件查询）
+  - 尽量使用短索引
+  - 使用链接(join)来代替子查询(sub-queries)
+  - 连表注意类型一致
+  - 索引散列值不适合建索引，比如性别
+- limit分页
+- p63 执行计划：预估执行时间
+  - explain select * from userinfo;
+  - all < index < range < index_merge < ref_or_null < ref < eq_ref < system/const
+- 慢日志
+  - 执行时间
+  - 未命中索引
+  - 文件路径
+  - 配置
+    - 内存
+    ```mysql
+    show variable like '%query%';
+    set global 变量名  = 值;
+    ```
+    - 配置文件
+    ```mysql
+    mysqld --defaults-file='E:my.conf'
+    my.conf:
+    	slow_query_log = ON
+	slow_query_log_file = D:...
+    ```
+    
+#### SQLALCHEMY 
 

@@ -2295,6 +2295,7 @@ conn.close()
     -        C_Order----------->disorder
     - 单值查找快，范围查找慢
   - btree-INNODB-二叉树
+  
 - 创建
   - 创建额外的文件（某种格式储存）
   ```MySql
@@ -2333,31 +2334,54 @@ create index xo on userinfo(email);
 select * from userinfo where email like 'asd@email'; -- NO
 select * from userinfo where email= 'asd@email'; -- YES
 ```
+
 - 频繁查找的列创建索引
+
 - p61 未命中索引
-  - `index: id(primary key) email(comman index)`
+  - `alter table userinfo add primary key(id);`
+  - `crate index xo on userinfo(email);`
   - like
   - fuction
   - or
-  - type
-  - `!=`
-  - `>`
-  - order by
-  - 组合索引最左前缀
+  ```MySql
+  select * from userinfo where id =2 or gender ='M'; -- NO
+  select * from userinfo where id =2 or gender='M' and email='sd@sd.com';--YES.忽略gender?
+  select * from userinfo where id >3 or email='sd@sd.com'; -- 主键例外
+  ```
+  - type 不一致，但主键例外
+  - `!=`，主键例外
+  - `>`，主键例外
+  - order by， 主键例外
+  ```MySql
+  select name from userinfo order by email desc; -- NO
+  select email fromn userinfo order by email desc; -- YES
+  ```
+  - 组合索引,最左前缀
+  
 - p62 注意事项
   - 避免使用 `select *`
-  - count(1)/(column) 代替 count(*)
-  - 尽量char 少量varchar
-  - 表的字段顺序:固定长度的字段优先
+  - `count(1)/(column)` 代替 `count(*)`
+  - 尽量用定长`char`少量`varchar`
+  - 表的字段顺序：固定长度的字段优先
   - 组合索引代替单个多列索引（经常使用多条件查询）
-  - 尽量使用短索引
+  - 尽量使用短索引（text 类型必须限定索引长度）
+  ```MySql 5.7
+  ...  title
+  ...  asdderrto888
+  ...  feretwtwo888
+  create index xo on tb1(title(9)); --为title列前9个字符创建索引
+  ```
   - 使用链接(join)来代替子查询(sub-queries)
+    - MySQl性能差不要多
+    - SQLsever性能不一样
   - 连表注意类型一致
   - 索引散列值不适合建索引，比如性别
+  
 - limit分页
 - p63 执行计划：预估执行时间
-  - explain select * from userinfo;
-  - all < index < range < index_merge < ref_or_null < ref < eq_ref < system/const
+  - `explain select * from userinfo;`
+  - `all < index < range < index_merge < ref_or_null < ref < eq_ref < system/const`
+  
 - 慢日志
   - 执行时间
   - 未命中索引
@@ -2370,6 +2394,7 @@ select * from userinfo where email= 'asd@email'; -- YES
     ```
     - 配置文件
     ```mysql
+    --配置后重启 mysqld 服务
     mysqld --defaults-file='E:my.conf'
     my.conf:
     	slow_query_log = ON

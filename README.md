@@ -2279,28 +2279,29 @@ conn.close()
 
 
 ### p58 索引
-- 作用：约束，加速查找
-- 索引
-  - 普通索引: 加速查找
-  - 主键索引：加速查找 + 不能为空 +　不能重复
-  - 唯一索引：加速查找 + 不能重复
-  - 联合索引（多列）
-    - 联合主键索引
-    - 联合唯一索引
-    - 联合普通索引
+####  作用：约束，加速查找
+####  索引
+- 普通索引: 加速查找
+- 主键索引：加速查找 + 不能为空 +　不能重复
+- 唯一索引：加速查找 + 不能重复
+- 联合索引（多列）
+  - 联合主键索引
+  - 联合唯一索引
+  - 联合普通索引
 - 加速查找
   - 命中索引加速查找
   - 插入、更新、删除值慢
 - 数据结构:
   - 通过算法另建一个数据表，加速查找
-  - 哈希
-    - TableB_Columns--->HASH--->999--map--->Memery_Address
-    -        C_Order----------->disorder
-    - 单值查找快，范围查找慢
+  - 哈希：单值查找快，范围查找慢
+    ```
+    TableB_Columns--->HASH--->999--map--->Memery_Address
+           C_Order----------->disorder
+    ```
   - btree-INNODB-二叉树
   
-- 创建
-  - 创建额外的文件（某种格式储存）
+#### 创建索引
+
   ```MySql
   -- 普通索引
   create index xo on userinfo(email);
@@ -2331,7 +2332,7 @@ conn.close()
   create index xo on userinfo(email);
   SELECT * from userinfo where id=3 and email='asd@email';
   ```
-- 命中索引
+#### 命中索引
 ```MySql
 create index xo on userinfo(email);
 select * from userinfo where email like 'asd@email'; -- NO
@@ -2340,62 +2341,62 @@ select * from userinfo where email= 'asd@email'; -- YES
 
 - 频繁查找的列创建索引
 
-- p61 未命中索引
-  - `alter table userinfo add primary key(id);`
-  - `crate index xo on userinfo(email);`
-  - like
-  - fuction
-  - or
+#### p61 未命中索引
+- `alter table userinfo add primary key(id);`
+- `crate index xo on userinfo(email);`
+- like
+- fuction
+- or
   ```MySql
   select * from userinfo where id =2 or gender ='M'; -- NO
   select * from userinfo where id =2 or gender='M' and email='sd@sd.com';--YES.忽略gender?
   select * from userinfo where id >3 or email='sd@sd.com'; -- 主键例外
   ```
-  - type 不一致，但主键例外
-  - `!=`，主键例外
-  - `>`，主键例外
-  - order by， 主键例外
+- type 不一致，但主键例外
+- `!=`，主键例外
+- `>`，主键例外
+- order by， 主键例外
   ```MySql
   select name from userinfo order by email desc; -- NO
   select email fromn userinfo order by email desc; -- YES
   ```
-  - 组合索引,最左前缀
+- 组合索引,最左前缀
   
-- p62 注意事项
-  - 避免使用 `select *`
-  - `count(1)/(column)` 代替 `count(*)`
-  - 尽量用定长`char`少量`varchar`
-  - 表的字段顺序：固定长度的字段优先
-  - 组合索引代替单个多列索引（经常使用多条件查询）
-  - 尽量使用短索引（text 类型必须限定索引长度）
+#### p62 注意事项
+- 避免使用 `select *`
+- `count(1)/(column)` 代替 `count(*)`
+- 尽量用定长`char`少量`varchar`
+- 表的字段顺序：固定长度的字段优先
+- 组合索引代替单个多列索引（经常使用多条件查询）
+- 尽量使用短索引（text 类型必须限定索引长度）
   ```MySql 5.7
   ...  title
   ...  asdderrto888
   ...  feretwtwo888
   create index xo on tb1(title(9)); --为title列前9个字符创建索引
   ```
-  - 使用链接(join)来代替子查询(sub-queries)
-    - MySQl性能差不要多
-    - SQLsever性能不一样
-  - 连表注意类型一致
-  - 索引散列值不适合建索引，比如性别
+- 使用链接(join)来代替子查询(sub-queries)
+  - MySQl性能差不要多
+  - SQLsever性能不一样
+- 连表注意类型一致
+- 索引散列值不适合建索引，比如性别
   
 
 ### p63 执行计划：预估执行时间
-  - `explain select * from userinfo;`
-  - `all < index < range < index_merge < ref_or_null < ref < eq_ref < system/const`
+- `explain select * from userinfo;`
+- `all < index < range < index_merge < ref_or_null < ref < eq_ref < system/const`
   
 ### 慢日志
-  - 执行时间
-  - 未命中索引
-  - 文件路径
-  - 配置
-    - 内存
+- 执行时间
+- 未命中索引
+- 文件路径
+- 配置
+  - 内存
     ```mysql
     show variable like '%query%';
     set global 变量名  = 值;
     ```
-    - 配置文件
+  - 配置文件
     ```mysql
     --配置后重启 mysqld 服务
     mysqld --defaults-file='E:my.conf'
@@ -2405,16 +2406,16 @@ select * from userinfo where email= 'asd@email'; -- YES
     ```
 
 ### limit（分页性能）
-  - 基于数据库
-  - ID(primary key)不一定连续（则`bteween and`范围取值每次数量不一定相同）
-  - 记录当前页最大值、最小值
-  - `上一页、下一页`
+- 基于数据库
+- ID(primary key)不一定连续（则`bteween and`范围取值每次数量不一定相同）
+- 记录当前页最大值、最小值
+- `上一页、下一页`
   ```MySql
   -- 基于当前页 200000
   select id from userinfo where id < 200001 order by id desc limit 10;
   select id from userinfo where id > 200001 limit 10;
   ```
-  - `上一页，[995]，996，997，998，999，下一页` 从995跳转到998页
+- `上一页，[995]，996，997，998，999，下一页` 从995跳转到998页
   ```MySql
   -- 每页显示10条，从995跳转到998页
   -- [995]-max_id, min_id

@@ -2377,7 +2377,7 @@ select * from userinfo where email= 'asd@email'; -- YES
   - 连表注意类型一致
   - 索引散列值不适合建索引，比如性别
   
-- limit分页
+
 - p63 执行计划：预估执行时间
   - `explain select * from userinfo;`
   - `all < index < range < index_merge < ref_or_null < ref < eq_ref < system/const`
@@ -2400,6 +2400,26 @@ select * from userinfo where email= 'asd@email'; -- YES
     	slow_query_log = ON
 	slow_query_log_file = D:...
     ```
-    
+
+- limit（分页性能）
+  - 基于数据库
+  - ID(primary key)不一定连续（则`bteween and`范围取值每次数量不一定相同）
+  - 记录当前页最大值、最小值
+  - `上一页、下一页`
+  ```MySql
+  -- 基于当前页 200000
+  select id from userinfo where id < 200001 order by id desc limit 10;
+  select id from userinfo where id > 200001 limit 10;
+  ```
+  - `上一页，[995]，996，997，998，999，下一页` 从995跳转到998页
+  ```MySql
+  -- 每页显示10条，从995跳转到998页
+  -- [995]-max_id, min_id
+  select * from userinfo where id in(
+  	select id from (
+  		select id from userinfo where id > max_id limit 30
+  	)as N order by N.id desc limit 10);
+  ```
 #### SQLALCHEMY 
+
 

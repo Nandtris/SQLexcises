@@ -44,6 +44,17 @@ FROM 子句中写在最后的表(基础表 driving table)将被最先处理，
 对虚拟表VT1 应用ON筛选器，ON 中的逻辑表达式将应用到虚拟表 VT1中的各个行，
 筛选出满足ON 逻辑表达式的行，生成虚拟表 VT2
 
+**备注 MYSQL 表左连接 ON AND 和ON WHERE 的区别　refer to SQL21
+在使用left join时,on and 和on where会有区别
+1. on的条件是在连接生成临时表时使用的条件,以左表为基准，
+不管on中的条件真否,都会返回左表中的记录；
+2.where条件是在临时表生成好后,再对临时表过滤。
+此时和left join有区别(返回左表全部记录),条件不为真就全部过滤掉,
+on后的条件来生成左右表关联的临时表,where后的条件是生成临时表后对临时表过滤
+
+on and是进行韦恩运算时，连接时就做的动作,where是全部连接完后，再根据条件过滤
+refer to:　https://www.cnblogs.com/HKUI/p/8536969.html
+
 3 JOIN 添加外部行
 如果指定了OUTER JOIN保留表中未找到匹配的行将作为外部行添加到虚拟表 VT2，生成虚拟表 VT3。
 保留表如下：
@@ -343,6 +354,21 @@ from employees e left join salaries s -- 大表
 on e.emp_no = s.emp_no
 where to_date = '9999-01-01'
 order by growth;
+--Result
+--10001|3861
+
+--LEFT JOIN on and/where
+SELECT s.emp_no,
+    (select s.salary-s1.salary
+         from salaries s1 where s1.from_date = hire_date) as growth
+FROM salaries s LEFT JOIN employees e
+ON s.emp_no = e.emp_no 
+AND to_date = '9999-01-01';
+--Result
+--10001|None
+--10001|3861
+--10002|None
+--10002|None
 ```  
 
 ### SQL22 动态查询参考2

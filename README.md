@@ -394,11 +394,11 @@ INSERT INTO salaries VALUES(10004,72527,'2001-12-01','9999-01-01');
   - MySQL四大排名函数 row_number、rank、dense_rank、ntile
   - reference: https://zhuanlan.zhihu.com/p/92654574
 ```MySQL
-select emp_no, salary,
-
-dense_rank() over(order by salary desc) as t_rank 
-from salaries 
-order by salary desc, emp_no;
+select 
+	emp_no, 
+	salary,
+	dense_rank() over(order by salary desc) as t_rank
+from salaries;
 ```
 - 窗口函数
 ```MySQL

@@ -526,10 +526,12 @@ order BY
     date, u_n;
 ```
 
-### SOL18
-- 请你查找薪水排名第二多的员工编号emp_no、薪水salary、last_name以及first_name，不能使用order by完成
-  - order by 排序实现方法之一
-  - 题目
+### SOL18薪水排名第二多的员工
+
+- 请你查找薪水排名第二多的员工编号emp_no、薪水salary、last_name
+- 以及first_name，不能使用order by完成
+
+
 ```MySQL
 drop table if exists  `employees` ; 
 drop table if exists  `salaries` ; 

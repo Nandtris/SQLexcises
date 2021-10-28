@@ -509,13 +509,21 @@ from (
 order by tmp.date, user.name;
 
 -- “截至到某一天，某一用户累计通过多少道题”算法原理
-# select pn1.user_id,pn1.date,sum(pn2.number) 
-# from passing_number pn1,passing_number pn2 
---  笛卡儿积筛法
-  -- t1.user_id = t2.user_id 同一用户
-  -- and t1.date >= t2.date 截至当前某用户累计天数
-# where pn1.user_id = pn2.user_id and pn1.date>=pn2.date 
-# group by pn1.user_id,pn1.date;
+-- 笛卡儿积筛法
+SELECT 
+    name u_n, p1.date,
+    sum(p2.number) as ps_num
+from 
+    passing_number p1, passing_number p2
+LEFT JOIN user ON
+    user_id = user.id
+WHERE 
+    p1.user_id = p2.user_id and 
+    p1.date >= p2.date
+GROUP BY
+    p1.user_id, p1.date
+order BY
+    date, u_n;
 ```
 
 ### SOL18

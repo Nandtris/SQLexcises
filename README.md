@@ -639,7 +639,7 @@ order by emp_no;
 
 
 
-### SQL32
+### SQL32 concat('a', ' ', 'b')
 ```MySQL
 -- 将employees表的所有员工的last_name和first_name拼接起来作为Name，中间以一个空格区分
 -- (注：sqllite,字符串拼接为 || 符号，不支持concat函数，mysql支持concat函数)
@@ -659,25 +659,6 @@ from employees;
 ```
 
 
-### SQL35
-- Solution
-```MySQL
--- mysql中常用的三种插入数据的语句:
--- insert into表示插入数据，数据库会检查主键，如果出现重复会报错；
--- replace into表示插入替换数据，需求表中有PrimaryKey，
--- 或者unique索引，如果数据库已经存在数据，则用新数据替换，如果没有数据效果则和insert into一样；
--- insert ignore表示，如果中已经存在相同的记录，则忽略当前新数据
-
-drop table if exists actor;
-
-CREATE TABLE actor (
-   actor_id  smallint(5)  NOT NULL PRIMARY KEY,
-   first_name  varchar(45) NOT NULL,
-   last_name  varchar(45) NOT NULL,
-   last_update  DATETIME NOT NULL);
-insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
-```
-
 ### SQL36 Index
 ```MySQL
 -- 请你创建一个actor_name表(columns:first_name, last_name)
@@ -687,7 +668,7 @@ insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 create table actor_name
 select first_name, last_name from actor;
 ```
-### SQL37 Index
+### SQL37 primary/Index/unique
 ```MySQL
 -- 添加主键，索引值必须是唯一的，且不能为NULL
 ALTER TABLE tbl_name ADD PRIMARY KEY (col_list);
@@ -748,8 +729,27 @@ after last_update;
 
 ### SQL41 Trigger
 
-### SQL44 2Replace  <br>
+### SQL35 insert ignore into
+- Solution 
+- reference SQL44
+```MySQL
+-- mysql中常用的三种插入数据的语句:
+-- insert into表示插入数据，数据库会检查主键，如果出现重复会报错；
+-- replace into表示插入替换数据，需求表中有PrimaryKey，
+-- 或者unique索引，如果数据库已经存在数据，则用新数据替换，如果没有数据效果则和insert into一样；
+-- insert ignore表示，如果中已经存在相同的记录，则忽略当前新数据
 
+drop table if exists actor;
+
+CREATE TABLE actor (
+   actor_id  smallint(5)  NOT NULL PRIMARY KEY,
+   first_name  varchar(45) NOT NULL,
+   last_name  varchar(45) NOT NULL,
+   last_update  DATETIME NOT NULL);
+insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
+```
+### SQL44 Replace into
+- reference SQL35
 ```MySQL
 -- 1- replace(x, y, z) 函数
 update titles_test 

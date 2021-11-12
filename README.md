@@ -1891,7 +1891,7 @@ import pymysql
 course_id = input('courseId: ')
 conn = pymysql.connect(host='localhost',
                        user='root',
-                       password='542643364',
+                       password='pw',
                        database='db2')
 cursor = conn.cursor()
 sql = 'select * from score where course_id=%s'

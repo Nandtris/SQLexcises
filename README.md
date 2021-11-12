@@ -2280,5 +2280,39 @@ select * from userinfo where email= 'asd@email'; -- YES
   ```
   
 #### SQLALCHEMY(...)
+- pandas <===> MySql
+```python
+# _*_ coding: utf-8 _*_
 
+# Pandas MySql 数据交互
+
+# reference: https://www.jianshu.com/p/238a13995b2b
+# pip3 install sqlalchemy
+# 初始化数据库连接："数据库类型+数据库驱动名://用户名:口令@机器地址:端口号/数据库名"
+
+# pymysql -- python操作数据库
+# sqlalchemy --  连接数据库
+# pandas -- read_sql_query()/to_sql()
+
+
+import pymysql
+from sqlalchemy import create_engine
+import numpy as np, pandas as pd
+
+engine = create_engine('mysql+pymysql://root:password@localhost:3306/db2?charset=utf8mb4')
+sql = 'select * from score;'
+
+# Read MySql files
+df = pd.read_sql_query(sql, engine)
+print(df)
+
+# Write DataFrame to MySql
+df = pd.DataFrame({'id': [1,2,3,4], 'num':[12,34,56,78]})
+df.to_sql('pandas_df1', engine, index=False)
+
+print('Read and Write to SQL success.')
+
+# Write local_CSV data to MySql
+df = pd.read_csv('examples/ex1.csv', sep=',')
+df.to_sql('ex1', engine, index=False)
 
